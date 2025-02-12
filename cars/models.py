@@ -3,8 +3,86 @@ from datetime import datetime
 from ckeditor.fields import RichTextField
 from multiselectfield import MultiSelectField
 
-# Create your models here.
-class Car(models.Model):
+class Machinery(models.Model):
+    YEAR_CHOICES = [(r, r) for r in range(1960, datetime.now().year + 1)]
+    CONDITION_CHOICES = [('new', 'Новый'), ('used', 'Б/у')]
+
+    year = models.IntegerField(choices=YEAR_CHOICES, verbose_name="Год выпуска")
+    price = models.IntegerField(verbose_name="Цена")
+    condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, verbose_name="Состояние")
+    description = RichTextField(verbose_name="Описание")
+    car_photo = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name="Основное фото")
+    car_photo_1 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    car_photo_2 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    car_photo_3 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    car_photo_4 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    created_date = models.DateTimeField(default=datetime.now, blank=True, verbose_name="Дата добавления")
+
+    class Meta:
+        abstract = True  # Базовый класс (не создаётся таблица в БД)
+
+class Tractor(Machinery):
+    DRIVE_TYPE_CHOICES = [('wheeled', 'Колёсный'), ('tracked', 'Гусеничный')]
+    TRANSMISSION_CHOICES = [('manual', 'Механическая'), ('auto', 'Автоматическая')]
+    TOW_CLASS_CHOICES = [(i, f'Класс {i}') for i in [0.2, 0.6, 1.4, 2, 3, 4, 5, 6]]
+    
+    drive_type = models.CharField(choices=DRIVE_TYPE_CHOICES, verbose_name="Тип")
+    power = models.IntegerField(verbose_name="Мощность (л.с.)")
+    engine_volume = models.FloatField(verbose_name="Объём двигателя (л)")
+    transmission = models.CharField(max_length=10, choices=TRANSMISSION_CHOICES, verbose_name="Тип КПП")
+    tow_class = models.FloatField(choices=TOW_CLASS_CHOICES, verbose_name="Тяговый класс")
+
+class Harvester(Machinery):
+    THRESHING_TYPE_CHOICES = [('drum', 'Барабан'), ('rotor', 'Ротор'), ('hybrid', 'Гибрид')]
+    
+    power = models.IntegerField(verbose_name="Мощность (л.с.)")
+    bunker_volume = models.IntegerField(verbose_name="Объём бункера (л)")
+    threshing_type = models.CharField(choices=THRESHING_TYPE_CHOICES, verbose_name="Тип молотильного аппарата")
+
+class SelfPropelledSprayer(Machinery):
+    power = models.IntegerField(verbose_name="Мощность (л.с.)")
+    width = models.IntegerField(verbose_name="Ширина обработки (м)")
+    tank_capacity = models.IntegerField(verbose_name="Ёмкость бака (л)")
+
+class Plow(Machinery):
+    width = models.IntegerField(verbose_name="Ширина (м)")
+    bodies = models.IntegerField(verbose_name="Число корпусов")
+    reversible = models.BooleanField(verbose_name="Оборотный")
+    depth = models.IntegerField(verbose_name="Глубина обработки (см)")
+    weight = models.IntegerField(verbose_name="Вес (кг)")
+    min_power = models.IntegerField(verbose_name="Минимальная мощность трактора (л.с.)")
+
+class Seeder(Machinery):
+    width = models.IntegerField(verbose_name="Ширина захвата (м)")
+    seed_tank = models.IntegerField(verbose_name="Объём бункера для семян (л)")
+    fert_tank = models.IntegerField(verbose_name="Объём бункера для удобрений (л)")
+
+class Harrow(Machinery):
+    HARROW_TYPE_CHOICES = [('disc', 'Дисковая'), ('tooth', 'Зубовая'), ('rotary', 'Ротационная')]
+    
+    width = models.IntegerField(verbose_name="Ширина захвата (м)")
+    harrow_type = models.CharField(choices=HARROW_TYPE_CHOICES, verbose_name="Тип бороны")
+
+class TrailedSprayer(Machinery):
+    width = models.IntegerField(verbose_name="Ширина обработки (м)")
+    tank_capacity = models.IntegerField(verbose_name="Ёмкость бака для удобрений (л)")
+
+class Mower(Machinery):
+    width = models.IntegerField(verbose_name="Ширина захвата (м)")
+
+class Baler(Machinery):
+    BALER_TYPE_CHOICES = [('round', 'Рулонный'), ('rectangular', 'Тюковой')]
+    BALE_SIZE_CHOICES = [('small', 'Малый (80x90см)'), ('medium', 'Средний (120x90см)'), ('large', 'Большой (150x120см)')]
+    
+    baler_type = models.CharField(choices=BALER_TYPE_CHOICES, verbose_name="Тип")
+    bale_size = models.CharField(choices=BALE_SIZE_CHOICES, verbose_name="Размер тюка")
+    productivity = models.IntegerField(verbose_name="Производительность (тюков/час)")
+
+
+
+
+
+class Machineryy(models.Model):
 
     state_choice = (
         ('AL', 'Alabama'),
