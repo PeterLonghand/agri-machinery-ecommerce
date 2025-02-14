@@ -6,7 +6,6 @@
 {% load humanize %}
 {% load static %}
 <!-- Banner start -->
-<!-- Log on to codeastro.com for more projects -->
 <div class="banner" id="banner">
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner banner-slider-inner text-center">
@@ -102,7 +101,7 @@
                 <i class="fa fa-angle-right"></i>
             </span>
         </a>
-		<!-- Log on to codeastro.com for more projects -->
+		
     </div>
 </div>
 <!-- Banner end -->
@@ -127,7 +126,7 @@
                             <a href="{% url 'car_detail' car.id %}" class="car-img">
                                 <div class="tag-2">Featured</div>
                                 <div class="price-box">
-                                    <span>${{car.price | intcomma}}</span>
+                                    <span>{{car.price | intcomma}} ₽</span>
                                 </div>
                                 <img class="d-block w-100" src="{{car.car_photo.url}}" alt="car" style="min-height: 262px; max-height: 262px;">
                             </a>
@@ -280,7 +279,7 @@
                             <p class="cartype">{{car.body_style}}</p>
                         </div>
                         <div class="pull-right">
-                            <p class="price">$ {{car.price | intcomma}}</p>
+                            <p class="price">{{car.price | intcomma}} ₽</p>
                         </div>
                     </div>
                 </div>
@@ -346,7 +345,7 @@
         </div>
     </div>
 </div>
-<!-- Log on to codeastro.com for more projects -->
+
 <!-- Intro section end -->
 
 

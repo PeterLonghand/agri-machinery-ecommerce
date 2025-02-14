@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import Team
 from cars.models import Machineryy
+from cars.models import Machinery, Tractor, Harvester, SelfPropelledSprayer, Plow, Seeder, Harrow, TrailedSprayer, Mower, Baler
+
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.contrib import messages
@@ -9,8 +11,10 @@ from django.contrib import messages
 
 def home(request):
     teams = Team.objects.all()
+
     featured_cars = Machineryy.objects.order_by('-created_date').filter(is_featured=True)
-    all_cars = Machineryy.objects.order_by('-created_date')
+    #all_cars = Machineryy.objects.order_by('-created_date')
+    all_cars = Machinery.objects
     model_search = Machineryy.objects.values_list('model', flat=True).distinct()
     city_search = Machineryy.objects.values_list('city', flat=True).distinct()
     year_search = Machineryy.objects.values_list('year', flat=True).distinct()
