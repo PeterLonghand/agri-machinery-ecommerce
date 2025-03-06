@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %} | {{single_car.car_title}} {% endblock %}
+{% block title %} | {{this_machinery.car_title}} {% endblock %}
 {% block content %}
 
 {% load static %}
 {% load humanize %}
-<!-- Log on to codeastro.com for more projects -->
+
 <!-- Sub banner start -->
 <div class="sub-banner overview-bgi">
     <div class="container breadcrumb-area">
         <div class="breadcrumb-areas">
-            <h1>{{single_car.car_title}}</h1>
+            <h1>{{this_machinery.manufacturer}} {{this_machinery.model_name}} ({{this_machinery.year}})</h1>
             <ul class="breadcrumbs">
                 <li><a href="index.html">Home</a></li>
-                <li class="active">{{single_car.car_title}}</li>
+                <li class="active">{{this_machinery.car_title}}</li>
             </ul>
         </div>
     </div>
@@ -30,82 +30,82 @@
                     <div class="heading-car clearfix">
                       {% include 'includes/messages.html' %}
                         <div class="pull-left">
-                            <h3>{{single_car.car_title}}</h3>
+                            <h3>{{this_machinery.get_machinery_type_display}} {{this_machinery.manufacturer}} {{this_machinery.model_name}} ({{this_machinery.year}})</h3>
                             <h6>
-                                <i class="flaticon-pin"></i>{{single_car.state}}, {{single_car.city}}
+                                <i class="flaticon-pin"></i>{{this_machinery.state}}, {{this_machinery.city}}
                             </h6>
                         </div>
                         <div class="pull-right">
-                            <h3><span>$ {{single_car.price | intcomma}}</span></h3>
+                            <h3><span>{{this_machinery.price | intcomma}} ₽</span></h3>
                         </div>
                     </div>
                     <div id="carDetailsSlider" class="carousel car-details-sliders slide mb-40">
                         <!-- main slider carousel items -->
                         <div class="carousel-inner">
                             <div class="active item carousel-item" data-slide-number="0">
-                                <img src="{{single_car.car_photo.url}}" class="img-fluid" alt="slider-car">
+                                <img src="{{this_machinery.car_photo.url}}" class="img-fluid" alt="slider-car">
                             </div>
-                            {% if single_car.car_photo_1 %}
+                            {% if this_machinery.car_photo_1 %}
                             <div class="item carousel-item" data-slide-number="1">
-                                <img src="{{single_car.car_photo_1.url}}" class="img-fluid" alt="slider-car">
+                                <img src="{{this_machinery.car_photo_1.url}}" class="img-fluid" alt="slider-car">
                             </div>
                             {% endif %}
-                            {% if single_car.car_photo_2 %}
+                            {% if this_machinery.car_photo_2 %}
                             <div class="item carousel-item" data-slide-number="2">
-                                <img src="{{single_car.car_photo_2.url}}" class="img-fluid" alt="slider-car">
+                                <img src="{{this_machinery.car_photo_2.url}}" class="img-fluid" alt="slider-car">
                             </div>
                             {% endif %}
-                            {% if single_car.car_photo_3 %}
+                            {% if this_machinery.car_photo_3 %}
                             <div class="item carousel-item" data-slide-number="4">
-                                <img src="{{single_car.car_photo_3.url}}" class="img-fluid" alt="slider-car">
+                                <img src="{{this_machinery.car_photo_3.url}}" class="img-fluid" alt="slider-car">
                             </div>
                             {% endif %}
-                            {% if single_car.car_photo_4 %}
+                            {% if this_machinery.car_photo_4 %}
                             <div class="item carousel-item" data-slide-number="5">
-                                <img src="{{single_car.car_photo_4.url}}" class="img-fluid" alt="slider-car">
+                                <img src="{{this_machinery.car_photo_4.url}}" class="img-fluid" alt="slider-car">
                             </div>
                             {% endif %}
-                        </div><!-- Log on to codeastro.com for more projects -->
+                        </div>
                         <!-- main slider carousel nav controls -->
                         <div class="carousel-indicators-section clearfix">
                             <ul class="carousel-indicators car-properties list-inline nav nav-justified">
                                 <li class="list-inline-item active">
                                     <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#carDetailsSlider">
-                                        <img src="{{single_car.car_photo.url}}" class="img-fluid" alt="small-car">
+                                        <img src="{{this_machinery.car_photo.url}}" class="img-fluid" alt="small-car">
                                     </a>
                                 </li>
-                                {% if single_car.car_photo_1 %}
+                                {% if this_machinery.car_photo_1 %}
                                 <li class="list-inline-item">
                                     <a id="carousel-selector-1" data-slide-to="1" data-target="#carDetailsSlider">
-                                        <img src="{{single_car.car_photo_1.url}}" class="img-fluid" alt="small-car">
+                                        <img src="{{this_machinery.car_photo_1.url}}" class="img-fluid" alt="small-car">
                                     </a>
                                 </li>
                                 {% endif %}
-                                {% if single_car.car_photo_2 %}
+                                {% if this_machinery.car_photo_2 %}
                                 <li class="list-inline-item">
                                     <a id="carousel-selector-2" data-slide-to="2" data-target="#carDetailsSlider">
-                                        <img src="{{single_car.car_photo_2.url}}" class="img-fluid" alt="small-car">
+                                        <img src="{{this_machinery.car_photo_2.url}}" class="img-fluid" alt="small-car">
                                     </a>
                                 </li>
                                 {% endif %}
-                                {% if single_car.car_photo_3 %}
+                                {% if this_machinery.car_photo_3 %}
                                 <li class="list-inline-item">
                                     <a id="carousel-selector-3" data-slide-to="3" data-target="#carDetailsSlider">
-                                        <img src="{{single_car.car_photo_3.url}}" class="img-fluid" alt="small-car">
+                                        <img src="{{this_machinery.car_photo_3.url}}" class="img-fluid" alt="small-car">
                                     </a>
                                 </li>
                                 {% endif %}
-                                {% if single_car.car_photo_4 %}
+                                {% if this_machinery.car_photo_4 %}
                                 <li class="list-inline-item">
                                     <a id="carousel-selector-4" data-slide-to="4" data-target="#carDetailsSlider">
-                                        <img src="{{single_car.car_photo_4.url}}" class="img-fluid" alt="small-car">
+                                        <img src="{{this_machinery.car_photo_4.url}}" class="img-fluid" alt="small-car">
                                     </a>
                                 </li>
                                 {% endif %}
                             </ul>
                         </div>
                     </div>
-					<!-- Log on to codeastro.com for more projects -->
+					
                     <!-- Tabbing box start -->
                     <div class="tabbing tabbing-box mb-40">
                         <ul class="nav nav-tabs" id="carTab" role="tablist">
@@ -123,7 +123,7 @@
                                         Description
                                     </h3>
                                     <p>
-                                      {{single_car.description | safe }}
+                                      {{this_machinery.description | safe }}
                                     </p>
                                 </div>
                             </div>
@@ -134,7 +134,7 @@
                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                             <ul>
                                                 <li>
-                                                    {{single_car.features}}
+                                                    {{this_machinery.features}}
                                                 </li>
 
                                             </ul>
@@ -148,7 +148,7 @@
                         </div>
                     </div>
 
-					<!-- Log on to codeastro.com for more projects -->
+					
                 </div>
             </div>
             <div class="col-lg-4 col-md-12">
@@ -159,56 +159,104 @@
 
 
                         <br>
-                        <h3 class="sidebar-title">Car Specs</h3>
+                        <!-- начало: ХАРАКТЕРИСТИКИ -->
+                        <h3 class="sidebar-title">Характеристики</h3>
                         <ul>
+                            {% if this_machinery.machinery_type == 'tractor' %}
                             <li>
-                                <span><b>Color:</b> </span>{{single_car.color}}
+                                <span><b>Мощность:</b> </span>{{this_machinery.power}} л.с.
                             </li>
                             <li>
-                                <span><b>Model:</b> </span>{{single_car.model}}
+                                <span><b>Объём двигателя:</b> </span>{{this_machinery.engine_volume}} л
                             </li>
                             <li>
-                                <span><b>Year:</b> </span>{{single_car.year}}
+                                <span><b>Привод:</b> </span>{{this_machinery.drive_type}}
                             </li>
                             <li>
-                                <span><b>Condition:</b> </span>{{single_car.condition}}
+                                <span><b>Трансмиссия:</b> </span>{{this_machinery.transmission_type}}
                             </li>
                             <li>
-                                <span><b>Body Style:</b> </span>{{single_car.body_style}}
+                                <span><b>Тяговый класс:</b> </span>{{this_machinery.tow_class}}
                             </li>
                             <li>
-                                <span><b>Engine:</b> </span>{{single_car.engine}}
+                                <span><b>...:</b> </span>{{this_machinery.engine}}
                             </li>
                             <li>
-                                <span><b>Transmission:</b> </span>{{single_car.transmission}}
+                                <span><b>...:</b> </span>{{this_machinery.transmission}}
                             </li>
                             <li>
-                                <span><b>Interior:</b> </span>{{single_car.interior}}
+                                <span><b>...:</b> </span>{{this_machinery.interior}}
                             </li>
                             <li>
-                                <span><b>Miles:</b> </span>{{single_car.miles | intcomma}} miles
+                                <span><b>...:</b> </span>{{this_machinery.miles | intcomma}} miles
                             </li>
                             <li>
-                                <span><b>Doors:</b> </span>{{single_car.doors}}
+                                <span><b>...:</b> </span>{{this_machinery.doors}}
                             </li>
                             <li>
-                                <span><b>Passengers:</b> </span>{{single_car.passengers}}
+                                <span><b>...:</b> </span>{{this_machinery.passengers}}
                             </li>
                             <li>
-                                <span><b>VID No.:</b> </span>{{single_car.vin_no}}
+                                <span><b>...:</b> </span>{{this_machinery.vin_no}}
                             </li>
                             <li>
-                                <span><b>Mileage:</b> </span>{{single_car.milage}}
+                                <span><b>...:</b> </span>{{this_machinery.milage}}
                             </li>
 
                             <li>
-                                <span><b>Fuel Type:</b> </span>{{single_car.fuel_type}}
+                                <span><b>...:</b> </span>{{this_machinery.fuel_type}}
                             </li>
                             <li>
-                                <span><b>Owners:</b> </span>{{single_car.no_of_owners}}
+                                <span><b>...:</b> </span>{{this_machinery.no_of_owners}}
                             </li>
-                        </ul>
+                            {% elif this_machinery.machinery_type == 'Harvester' %}
+                            <li>
+                                <span><b>Мощность:</b> </span>{{this_machinery.power}} л.с.
+                            </li>
+                            <li>
+                                <span><b>Объём двигателя:</b> </span>{{this_machinery.engine_volume}} 
+                            </li>
+                            <li>
+                                <span><b>Объём бункера:</b> </span>{{this_machinery.bunker_volume}} л
+                            </li>
+                            <li> 
+                                <span><b>Тип молотильного аппарата:</b> </span>{{this_machinery.threshing_type}}
+                            </li>
+
+                            {% elif this_machinery.machinery_type == 'SelfPropelledSprayer' %}
+                            <li>
+                                <span><b>Мощность:</b> </span>{{this_machinery.power}} л.с.
+                            </li>
+                            <li>
+                                <span><b>Объём двигателя:</b> </span>{{this_machinery.engine_volume}} л
+                            </li>
+                            <li>
+                                <span><b>Ширина обработки:</b></span>{{this_machinery.width}} м
+                            </li>
+                            <li>
+                                <span><b> Объём бака для удобрений </b></span>{{this_machinery.tank_capacity}} л
+                            </li>
+                            {% elif this_machinery.machinery_type == 'Plow' %}
+                            <li>
+                                <span><b>Ширина обработки:</b></span>{{this_machinery.width}} м
+                            </li>
+                            <li> 
+                                <span><b>Число корпусов:</b></span>{{this_machinery.bodies}}
+                            </li>
+                            <li>
+                                <span><b>Оборотный:</b></span>{{this_machinery.reversible}} 
+                            </li>
+                            <li>
+                                <span><b>Вес:</b></span>{{this_machinery.weight}} кг
+                            </li>
+
+                            <li>
+                                <span><b>Минимальная мощность трактора:</b></span>{{this_machinery.min_power}} л.с.
+                            </li>
+                            {% endif %}
+                        </ul>                        
                     </div>
+                    
 
                     <!-- Inquiry Modal -->
                     <div class="modal fade" id="inquiryModal" role="dialog">
@@ -231,7 +279,7 @@
                                 <input type="hidden" name="user_id" value="0">
                               {% endif %}
 
-                              <input type="hidden" name="car_id" value="{{single_car.id}}">
+                              <input type="hidden" name="car_id" value="{{this_machinery.id}}">
                                 <div class="form-group">
                                   <label for="name" class="col-form-label">Hello, My Name is</label>
                                   <div class="row">
@@ -256,9 +304,9 @@
                                         <option value="Others [Mention Below]">Others [Mention Below]</option>
                                       </select>
                                     </div>
-									<!-- Log on to codeastro.com for more projects -->
+									
                                 <div class="form-group">
-                                  <input type="text" name="car_title" class="form-control" value="{{ single_car.car_title }}" readonly>
+                                  <input type="text" name="car_title" class="form-control" value="{{ this_machinery.car_title }}" readonly>
                                 </div>
 
                                 <div class="form-group">
@@ -327,6 +375,6 @@
             </div>
         </div>
     </div>
-</div><!-- Log on to codeastro.com for more projects -->
+</div>
 <!-- Properties details page end -->
 {% endblock %}

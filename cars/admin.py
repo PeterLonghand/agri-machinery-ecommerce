@@ -12,13 +12,18 @@ class MachineryAdmin(admin.ModelAdmin):
         if obj.car_photo:
             return format_html('<img src="{}" width="40" style="border-radius: 5px;" />'.format(obj.car_photo.url))
         return "-"
-    
-    thumbnail.short_description = 'Фото'
 
-    list_display = ('id', 'thumbnail', 'year', 'price', 'condition', 'created_date')
+    thumbnail.short_description = "Фото"
+
+    list_display = ('id', 'thumbnail', 'machinery_type', 'year', 'price', 'condition')
     list_display_links = ('id', 'thumbnail')
-    search_fields = ('id', 'year', 'price', 'condition')
-    list_filter = ('condition', 'year')
+    search_fields = ('id', 'machinery_type', 'year')
+    list_filter = ('machinery_type', 'condition', 'year')
+
+    #list_display = ('id', 'thumbnail', 'year', 'price', 'condition', 'created_date')
+    #list_display_links = ('id', 'thumbnail')
+    #search_fields = ('id', 'year', 'price', 'condition')
+    #list_filter = ('condition', 'year')
 
 # Регистрируем базовую модель
 #admin.site.register(Machinery, MachineryAdmin)
@@ -43,7 +48,13 @@ class SelfPropelledSprayerAdmin(admin.ModelAdmin):
 
 @admin.register(Plow)
 class PlowAdmin(admin.ModelAdmin):
-    list_display = ('id', 'year', 'price', 'width', 'bodies', 'reversible')
+    def thumbnail(self, obj):
+        if obj.car_photo:
+            return format_html('<img src="{}" width="40" style="border-radius: 5px;" />'.format(obj.car_photo.url))
+        return "-"
+
+    thumbnail.short_description = "Фото"
+    list_display = ('id', 'thumbnail', 'manufacturer', 'model_name','year', 'price', 'width', 'bodies', 'reversible')
     list_filter = ('reversible', 'year')
     search_fields = ('id', 'width')
 

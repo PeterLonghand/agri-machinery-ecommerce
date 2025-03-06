@@ -5,16 +5,18 @@ from multiselectfield import MultiSelectField
 
 class Machinery(models.Model):
     MACHINERY_TYPES = [
-        ('tractor', 'Трактор'),
-        ('harvester', 'Комбайн'),
-        ('sprayer_self', 'Опрыскиватель самоходный'),
-        ('plow', 'Плуг'),
-        ('seeder', 'Сеялка'),
-        ('harrow', 'Борона'),
-        ('sprayer_trail', 'Опрыскиватель прицепной'),
-        ('mower', 'Косилка прицепная'),
-        ('baler', 'Пресс-подборщик'),
+        ('Tractor', 'Трактор'),
+        ('Harvester', 'Комбайн'),
+        ('SelfPropelledSprayer', 'Опрыскиватель самоходный'),
+        ('Plow', 'Плуг'),
+        ('Seeder', 'Сеялка'),
+        ('Harrow', 'Борона'),
+        ('TrailedSprayer', 'Опрыскиватель прицепной'),
+        ('Mower', 'Косилка прицепная'),
+        ('Baler', 'Пресс-подборщик'),
     ]
+    manufacturer = models.CharField(max_length=28, verbose_name="Производитель")
+    model_name = models.CharField(max_length=28, verbose_name="Название модели")
 
     machinery_type = models.CharField(max_length=50, choices=MACHINERY_TYPES, editable=False)
     YEAR_CHOICES = [(r, r) for r in range(1960, datetime.now().year + 1)]
@@ -24,12 +26,20 @@ class Machinery(models.Model):
     price = models.IntegerField(verbose_name="Цена")
     condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, verbose_name="Состояние")
     description = RichTextField(verbose_name="Описание")
-    car_photo = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name="Основное фото")
-    car_photo_1 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
-    car_photo_2 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
-    car_photo_3 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
-    car_photo_4 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name="Основное фото")
+    photo_1 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    photo_2 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    photo_3 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    photo_4 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
     created_date = models.DateTimeField(default=datetime.now, blank=True, verbose_name="Дата добавления")
+
+    def get_real_instance(self):
+        """Возвращает объект с реальным типом (SelfPropelledSprayer, Harvester и т.д.)."""
+        for subclass in self.__class__.__subclasses__():
+            if subclass.objects.filter(pk=self.pk).exists():
+                return subclass.objects.get(pk=self.pk)
+        return self  # Если дочерней модели нет, вернуть сам объект
+
 
     class Meta:
         verbose_name = "Техника"
@@ -37,11 +47,11 @@ class Machinery(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.machinery_type:
-            self.machinery_type = self.__class__.__name__.lower()
+            self.machinery_type = self.__class__.__name__
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.machinery_type} ({self.year})"
+        return f"{self.manufacturer} {self.model_name} ({self.year})"
 
 class Tractor(Machinery):
     DRIVE_TYPE_CHOICES = [('wheeled', 'Колёсный'), ('tracked', 'Гусеничный')]
@@ -61,6 +71,7 @@ class Harvester(Machinery):
     THRESHING_TYPE_CHOICES = [('drum', 'Барабан'), ('rotor', 'Ротор'), ('hybrid', 'Гибрид')]
     
     power = models.IntegerField(verbose_name="Мощность (л.с.)")
+    engine_volume = models.FloatField(verbose_name= "Объём двигателя (л)")
     bunker_volume = models.IntegerField(verbose_name="Объём бункера (л)")
     threshing_type = models.CharField(choices=THRESHING_TYPE_CHOICES, verbose_name="Тип молотильного аппарата")
     class Meta:
@@ -69,8 +80,9 @@ class Harvester(Machinery):
 
 class SelfPropelledSprayer(Machinery):
     power = models.IntegerField(verbose_name="Мощность (л.с.)")
+    engine_volume = models.FloatField(verbose_name= "Объём двигателя (л)")
     width = models.IntegerField(verbose_name="Ширина обработки (м)")
-    tank_capacity = models.IntegerField(verbose_name="Ёмкость бака (л)")
+    tank_capacity = models.IntegerField(verbose_name="Объём бака удобрений (л)")
     class Meta:
         verbose_name = "Опрыскиватель самоходный"
         verbose_name_plural = "Опрыскиватели самоходные"
@@ -79,7 +91,7 @@ class Plow(Machinery):
     width = models.IntegerField(verbose_name="Ширина (м)")
     bodies = models.IntegerField(verbose_name="Число корпусов")
     reversible = models.BooleanField(verbose_name="Оборотный")
-    depth = models.IntegerField(verbose_name="Глубина обработки (см)")
+    #depth = models.IntegerField(verbose_name="Глубина обработки (см)")
     weight = models.IntegerField(verbose_name="Вес (кг)")
     min_power = models.IntegerField(verbose_name="Минимальная мощность трактора (л.с.)")
     class Meta:

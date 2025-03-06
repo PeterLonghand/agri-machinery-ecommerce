@@ -1,33 +1,35 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Machineryy
+from cars.models import Machinery, Tractor, Harvester, SelfPropelledSprayer, Plow, Seeder, Harrow, TrailedSprayer, Mower, Baler
+
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 # Create your views here.
 def cars(request):
-    cars = Machineryy.objects.order_by('-created_date')
-    paginator = Paginator(cars, 4)
+    machinery = Machinery.objects.order_by('-created_date')
+    paginator = Paginator(machinery, 4)
     page = request.GET.get('page')
-    paged_cars = paginator.get_page(page)
+    paged_machinery = paginator.get_page(page)
 
-    model_search = Machineryy.objects.values_list('model', flat=True).distinct()
+    type_search = [choice[1] for choice in Machinery.MACHINERY_TYPES]
     city_search = Machineryy.objects.values_list('city', flat=True).distinct()
-    year_search = Machineryy.objects.values_list('year', flat=True).distinct()
-    body_style_search = Machineryy.objects.values_list('body_style', flat=True).distinct()
-
+    year_search = Machinery.objects.values_list('year', flat=True).distinct()
+    brand_search = Machinery.objects.values_list('manufacturer', flat=True).distinct()
+    
     data = {
-        'cars': paged_cars,
-        'model_search': model_search,
+        'machinery': paged_machinery,
+        'type_search': type_search,
         'city_search': city_search,
         'year_search': year_search,
-        'body_style_search': body_style_search,
+        'brand_search': brand_search,
     }
     return render(request, 'cars/cars.html', data)
 
 def car_detail(request, id):
-    single_car = get_object_or_404(Machineryy, pk=id)
+    this_machinery = get_object_or_404(Machinery, pk=id).get_real_instance()
 
     data = {
-        'single_car': single_car,
+        'this_machinery': this_machinery,
     }
     return render(request, 'cars/car_detail.html', data)
 
@@ -35,7 +37,7 @@ def car_detail(request, id):
 def search(request):
     cars = Machineryy.objects.order_by('-created_date')
 
-    model_search = Machineryy.objects.values_list('model', flat=True).distinct()
+    type_search = Machineryy.objects.values_list('model', flat=True).distinct()
     city_search = Machineryy.objects.values_list('city', flat=True).distinct()
     year_search = Machineryy.objects.values_list('year', flat=True).distinct()
     body_style_search = Machineryy.objects.values_list('body_style', flat=True).distinct()
@@ -74,7 +76,7 @@ def search(request):
 
     data = {
         'cars': cars,
-        'model_search': model_search,
+        'type_search': type_search,
         'city_search': city_search,
         'year_search': year_search,
         'body_style_search': body_style_search,

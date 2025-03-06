@@ -12,21 +12,32 @@ from django.contrib import messages
 def home(request):
     teams = Team.objects.all()
 
-    featured_cars = Machineryy.objects.order_by('-created_date').filter(is_featured=True)
+    featured_cars = [m.get_real_instance() for m in Machinery.objects.all().order_by('-created_date').filter(condition='new')]
     #all_cars = Machineryy.objects.order_by('-created_date')
-    all_cars = Machinery.objects
-    model_search = Machineryy.objects.values_list('model', flat=True).distinct()
+    #all_cars = Machinery.objects.all().order_by('-created_date')
+    all_cars = [m.get_real_instance() for m in Machinery.objects.all().order_by('-created_date')]
+
+    '''for car in all_cars:
+        if car.machinery_type == 'selfpropelledsprayer':  # Убедись, что тип совпадает с choices!
+            print(f"\n\n{car.tank_capacity}")  # Теперь ошибки не будет 🚀
+    '''
+
+        
+
+    brand_search = Machinery.objects.values_list('manufacturer', flat=True).distinct()
     city_search = Machineryy.objects.values_list('city', flat=True).distinct()
-    year_search = Machineryy.objects.values_list('year', flat=True).distinct()
-    body_style_search = Machineryy.objects.values_list('body_style', flat=True).distinct()
+    year_search = Machinery.objects.values_list('year', flat=True).distinct()
+    types_search = [choice[1] for choice in Machinery.MACHINERY_TYPES]
+    max_price = Machinery.objects.all().order_by('-price').first().price + 1000000
     data = {
         'teams': teams,
         'featured_cars': featured_cars,
         'all_cars': all_cars,
-        'model_search': model_search,
+        'brand_search': brand_search,
         'city_search': city_search,
         'year_search': year_search,
-        'body_style_search': body_style_search,
+        'types_search': types_search,
+        'max_price': max_price,
     }
     return render(request, 'pages/home.html', data)
 
