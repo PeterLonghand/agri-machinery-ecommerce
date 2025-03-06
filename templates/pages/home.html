@@ -220,24 +220,24 @@
             <p></p>
         </div>
         <div class="row">
-          {% for machinery in all_cars|slice:":6" %}
+          {% for machine in all_cars|slice:":6" %}
             <div class="col-lg-4 col-md-6">
                 <div class="car-box">
                     <div class="car-thumbnail">
-                        <a href="{% url 'car_detail' machinery.id %}" class="car-img">
+                        <a href="{% url 'car_detail' machine.id %}" class="car-img">
                             <div class="tag">For Sale</div>
-                            <img class="d-block w-100" src="{{machinery.photo.url}}" alt="car" style="min-height: 262px; max-height: 262px;">
+                            <img class="d-block w-100" src="{{machine.photo.url}}" alt="car" style="min-height: 262px; max-height: 262px;">
                             <div class="facilities-list clearfix">
                                 <ul>
-                                    {% if machinery.machinery_type == 'SelfPropelledSprayer' %}
+                                    {% if machine.machinery_type == 'SelfPropelledSprayer' %}
                                     <li>
-                                        <span><i class="flaticon-way"></i></span>{{machinery.width | intcomma}} mi
+                                        <span><i class="flaticon-way"></i></span>{{machine.width | intcomma}} mi
                                     </li>
                                     <li>
-                                        <span><i class="flaticon-calendar-1"></i></span>{{machinery.year}}
+                                        <span><i class="flaticon-calendar-1"></i></span>{{machine.year}}
                                     </li>
                                     <li>
-                                        <span><i class="flaticon-manual-transmission"></i></span>{{machinery.tank_capacity | intcomma}} l
+                                        <span><i class="flaticon-manual-transmission"></i></span>{{machine.tank_capacity | intcomma}} l
                                     </li>
                                     {% endif %}
                                 </ul>
@@ -248,28 +248,28 @@
                             <div class="overlap-box">
                                 <div class="overlap-btns-area">
                                     <div class="car-magnify-gallery">
-                                        <a href="{{machinery.photo.url}}" class="overlap-btn">
+                                        <a href="{{machine.photo.url}}" class="overlap-btn">
                                             <i class="fa fa-expand"></i>
-                                            <img class="hidden" src="{{machinery.photo.url}}">
+                                            <img class="hidden" src="{{machine.photo.url}}">
                                         </a>
-                                        {% if machinery.photo_1 %}
-                                        <a href="{{machinery.photo_1.url}}" class="hidden">
-                                            <img class="hidden" src="{{machinery.photo_1.url}}">
-                                        </a>
-                                        {% endif %}
-                                        {% if machinery.photo_2 %}
-                                        <a href="{{machinery.photo_2.url}}" class="hidden">
-                                            <img class="hidden" src="{{machinery.photo_2.url}}">
+                                        {% if machine.photo_1 %}
+                                        <a href="{{machine.photo_1.url}}" class="hidden">
+                                            <img class="hidden" src="{{machine.photo_1.url}}">
                                         </a>
                                         {% endif %}
-                                        {% if machinery.photo_3 %}
-                                        <a href="{{machinery.photo_3.url}}" class="hidden">
-                                            <img class="hidden" src="{{machinery.photo_3.url}}">
+                                        {% if machine.photo_2 %}
+                                        <a href="{{machine.photo_2.url}}" class="hidden">
+                                            <img class="hidden" src="{{machine.photo_2.url}}">
+                                        </a>
+                                        {% endif %}
+                                        {% if machine.photo_3 %}
+                                        <a href="{{machine.photo_3.url}}" class="hidden">
+                                            <img class="hidden" src="{{machine.photo_3.url}}">
                                         </a>
                                         {% endif %}
                                         {% if machinery.photo_4 %}
-                                        <a href="{{machinery.photo_4.url}}" class="hidden">
-                                            <img class="hidden" src="{{machinery.photo_4.url}}">
+                                        <a href="{{machine.photo_4.url}}" class="hidden">
+                                            <img class="hidden" src="{{machine.photo_4.url}}">
                                         </a>
                                         {% endif %}
                                     </div>
@@ -279,20 +279,20 @@
                     </div>
                     <div class="detail">
                         <h1 class="title">
-                            <a href="{% url 'car_detail' machinery.id %}">{{machinery.manufacturer}} {{machinery.model_name}}</a>
+                            <a href="{% url 'car_detail' machine.id %}">{{machine.manufacturer}} {{machine.model_name}}</a>
                         </h1>
                         <div class="location">
-                            <a href="{% url 'car_detail' machinery.id %}">
-                                <i class="flaticon-pin"></i>{{machinery.state}}, {{machinery.city}}
+                            <a href="{% url 'car_detail' machine.id %}">
+                                <i class="flaticon-pin"></i>{{machine.state}}, {{machine.city}}
                             </a>
                         </div>
                     </div>
                     <div class="footer clearfix">
                         <div class="pull-left ratings days">
-                            <p class="cartype">{{machinery.body_style}}</p>
+                            <p class="cartype">{{machine.body_style}}</p>
                         </div>
                         <div class="pull-right">
-                            <p class="price">{{machinery.price | intcomma}} ₽</p>
+                            <p class="price">{{machine.price | intcomma}} ₽</p>
                         </div>
                     </div>
                 </div>

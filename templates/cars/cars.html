@@ -29,7 +29,80 @@
                 <div class="row">
                   {% for machine in machinery %}
                     <div class="col-lg-6 col-md-6">
+
                         <div class="car-box-3">
+                            <div class="car-thumbnail">
+                                <a href="{% url 'car_detail' machine.id %}" class="car-img">
+                                    <div class="tag-2">НОВЫЙ</div>
+                                    <div class="price-box">
+                                        <span>{{machine.price | intcomma}} ₽</span>
+                                    </div>
+                                    <img class="d-block w-100" src="{{machine.photo.url}}" alt="car" style="min-height: 262px; max-height: 262px;">
+                                </a>
+                                <div class="carbox-overlap-wrapper">
+                                    <div class="overlap-box">
+                                        <div class="overlap-btns-area">
+                                            <div class="car-magnify-gallery">
+                                                <a href="{{machine.photo.url}}" class="overlap-btn">
+                                                    <i class="fa fa-expand"></i>
+                                                    <img class="hidden" src="{{machine.photo.url}}">
+                                                </a>
+                                                {% if machine.photo_1 %}
+                                                <a href="{{machine.photo_1.url}}" class="hidden">
+                                                    <img class="hidden" src="{{machine.photo_1.url}}">
+                                                </a>
+                                                {% endif %}
+                                                {% if machine.photo_2 %}
+                                                <a href="{{machine.photo_2.url}}" class="hidden">
+                                                    <img class="hidden" src="{{machine.photo_2.url}}">
+                                                </a>
+                                                {% endif %}
+                                                {% if machine.photo_3 %}
+                                                <a href="{{machine.photo_3.url}}" class="hidden">
+                                                    <img class="hidden" src="{{machine.photo_3.url}}">
+                                                </a>
+                                                {% endif %}
+                                                {% if machine.photo_4 %}
+                                                <a href="{{machine.photo_4.url}}" class="hidden">
+                                                    <img class="hidden" src="{{machine.photo_4.url}}">
+                                                </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="detail">
+                                <h1 class="title">
+                                    <a href="{% url 'car_detail' machine.id %}">{{machine.get_machinery_type_display}} {{machine.manufacturer}} {{machine.model_name}} ({{machine.year}})</a>
+                                </h1>
+                                <div class="location">
+                                    <a href="{% url 'car_detail' machine.id %}">
+                                        <!--<i class="flaticon-pin"></i>{{car.state}}, {{car.city}} -->
+                                    </a>
+                                </div>
+                                <ul class="facilities-list clearfix">
+                                    
+                                    {% if machine.width %}
+                                    <li>Рабочая ширина: {{machine.width | intcomma}} м</li>
+                                    {%  endif %}
+                                    {% if machine.power %} 
+                                    <li>Двигатель: {{machine.engine_volume}}л   {{machine.power}} л.с. </li>
+                                    {% endif %}
+                                    
+                                    {% if machine.machinery_type == 'SelfPropelledSprayer' %}
+                                    <li>Объём бака: {{machine.tank_capacity}} л</li>
+                                    {% elif machine.machinery_type == 'Plow' %}
+                                    <li>{{machine.bodies}}-корпусной</li>
+                                    <li>Оборотный: {% if machine.reversible %}да{% else %}нет{% endif %}</li>
+                                    <li>Мин. мощность трактора: {{machine.min_power}} л.с.</li>
+                                    {% endif %}
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- <div class="car-box-3">
                             <div class="car-thumbnail">
                                 <a href="{% url 'car_detail' machine.id %}" class="car-img">
                                     <div class="tag">продается</div>
@@ -79,7 +152,7 @@
                                 <div class="location">
                                     <a href="{% url 'car_detail' machine.id %}">
                                         <!-- <i class="flaticon-pin"></i>{{car.state}}, {{car.city}} -->
-                                    </a>
+                                    <!--</a>
                                 </div>
                                 <ul class="facilities-list clearfix">
                                     {% if machine.machinery_type == 'Tractor' %}
@@ -88,19 +161,19 @@
                                     <li>{{machine.drive_type}}</li>
                                     <li>{{machine.transmission_type}}</li>
                                     <li>{{machine.tow_class}}</li>                                    
-                                    {% if machine.machinery_type == 'SelfPropelledSprayer' %}
+                                    {% elif machine.machinery_type == 'SelfPropelledSprayer' %}
                                     <li>{{machine.fuel_type}}</li>
                                     <li>{{car.miles | intcomma }} miles</li>
                                     <li>{{car.transmission}}</li>
                                     <li>{{car.body_style}}</li>
                                     <li>{{car.color}}</li>
                                     <li>{{car.year}}</li>
-                                    {% if machine.machinery_type == '' %}
+                                    {% elif machine.machinery_type == '' %}
                                     {% endif %}
                                 </ul>
 
                             </div>
-                        </div>
+                        </div> -->
                     </div>
             {% endfor %}
 
@@ -164,14 +237,14 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <select class="form-control search-fields" name="city">
                                     <option selected="true" disabled="disabled">Location</option>
                                     {% for city in city_search %}
                                       <option value="{{city}}">{{city}}</option>
                                     {% endfor %}
                                 </select>
-                            </div>
+                            </div> -->
                             <div class="form-group">
                                 <select class="form-control search-fields" name="body_style">
                                     <option selected="true" disabled="disabled">Производитель</option>
