@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+
 {% block title %}Каталог техники{% endblock %}
 {% block content %}
 
@@ -27,155 +28,94 @@
             <div class="col-lg-8 col-md-12">
 
                 <div class="row">
-                  {% for machine in machinery %}
+                    {% for machine in machinery %}
                     <div class="col-lg-6 col-md-6">
-
-                        <div class="car-box-3">
-                            <div class="car-thumbnail">
-                                <a href="{% url 'car_detail' machine.id %}" class="car-img">
-                                    <div class="tag-2">НОВЫЙ</div>
-                                    <div class="price-box">
-                                        <span>{{machine.price | intcomma}} ₽</span>
-                                    </div>
-                                    <img class="d-block w-100" src="{{machine.photo.url}}" alt="car" style="min-height: 262px; max-height: 262px;">
-                                </a>
-                                <div class="carbox-overlap-wrapper">
-                                    <div class="overlap-box">
-                                        <div class="overlap-btns-area">
-                                            <div class="car-magnify-gallery">
-                                                <a href="{{machine.photo.url}}" class="overlap-btn">
-                                                    <i class="fa fa-expand"></i>
-                                                    <img class="hidden" src="{{machine.photo.url}}">
-                                                </a>
-                                                {% if machine.photo_1 %}
-                                                <a href="{{machine.photo_1.url}}" class="hidden">
-                                                    <img class="hidden" src="{{machine.photo_1.url}}">
-                                                </a>
-                                                {% endif %}
-                                                {% if machine.photo_2 %}
-                                                <a href="{{machine.photo_2.url}}" class="hidden">
-                                                    <img class="hidden" src="{{machine.photo_2.url}}">
-                                                </a>
-                                                {% endif %}
-                                                {% if machine.photo_3 %}
-                                                <a href="{{machine.photo_3.url}}" class="hidden">
-                                                    <img class="hidden" src="{{machine.photo_3.url}}">
-                                                </a>
-                                                {% endif %}
-                                                {% if machine.photo_4 %}
-                                                <a href="{{machine.photo_4.url}}" class="hidden">
-                                                    <img class="hidden" src="{{machine.photo_4.url}}">
-                                                </a>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
+                      <div class="car-box-3" 
+                           data-type="{{ machine.machinery_type }}"
+                           data-manufacturer="{{ machine.manufacturer }}"
+                           data-model="{{ machine.model_name }}"
+                           data-year="{{ machine.year }}"
+                           data-price="{{ machine.price }}"
+                           data-condition="{% if machine.is_new %}new{% else %}used{% endif %}"
+                           {% if machine.power %}data-power="{{ machine.power }}"{% endif %}
+                           {% if machine.engine_volume %}data-engine-volume="{{ machine.engine_volume }}"{% endif %}
+                           {% if machine.width %}data-width="{{ machine.width }}"{% endif %}
+                           {% if machine.drive_type %}data-drive-type="{{ machine.drive_type }}"{% endif %}
+                           {% if machine.transmission_type %}data-transmission="{{ machine.transmission_type }}"{% endif %}
+                           {% if machine.tow_class %}data-tow-class="{{ machine.tow_class }}"{% endif %}
+                           {% if machine.tank_capacity %}data-tank-capacity="{{ machine.tank_capacity }}"{% endif %}
+                           {% if machine.bodies %}data-bodies="{{ machine.bodies }}"{% endif %}
+                           {% if machine.reversible %}data-reversible="yes"{% else %}data-reversible="no"{% endif %}
+                           {% if machine.min_power %}data-min-power="{{ machine.min_power }}"{% endif %}
+                           {% if machine.bunker_volume %}data-bunker-volume="{{ machine.bunker_volume }}"{% endif %}
+                           {% if machine.threshing_type %}data-threshing-type="{{ machine.threshing_type }}"{% endif %}>
+                        
+                        <div class="car-thumbnail">
+                          <a href="{% url 'car_detail' machine.id %}" class="car-img">
+                            <div class="tag-2">{% if machine.is_new %}НОВЫЙ{% else %}Б/У{% endif %}</div>
+                            <div class="price-box"><span>{{machine.price | intcomma}} ₽</span></div>
+                            <img class="d-block w-100" src="{{machine.photo.url}}" alt="car" style="min-height: 262px; max-height: 262px;">
+                          </a>
+                          <div class="carbox-overlap-wrapper">
+                            <div class="overlap-box">
+                              <div class="overlap-btns-area">
+                                <div class="car-magnify-gallery">
+                                  <a href="{{machine.photo.url}}" class="overlap-btn">
+                                    <i class="fa fa-expand"></i>
+                                    <img class="hidden" src="{{machine.photo.url}}">
+                                  </a>
+                                  {% if machine.photo_1 %}
+                                  <a href="{{machine.photo_1.url}}" class="hidden">
+                                    <img class="hidden" src="{{machine.photo_1.url}}">
+                                  </a>
+                                  {% endif %}
+                                  {% if machine.photo_2 %}
+                                  <a href="{{machine.photo_2.url}}" class="hidden">
+                                    <img class="hidden" src="{{machine.photo_2.url}}">
+                                  </a>
+                                  {% endif %}
+                                  {% if machine.photo_3 %}
+                                  <a href="{{machine.photo_3.url}}" class="hidden">
+                                    <img class="hidden" src="{{machine.photo_3.url}}">
+                                  </a>
+                                  {% endif %}
+                                  {% if machine.photo_4 %}
+                                  <a href="{{machine.photo_4.url}}" class="hidden">
+                                    <img class="hidden" src="{{machine.photo_4.url}}">
+                                  </a>
+                                  {% endif %}
                                 </div>
+                              </div>
                             </div>
-                
-                            <div class="detail">
-                                <h1 class="title">
-                                    <a href="{% url 'car_detail' machine.id %}">{{machine.get_machinery_type_display}} {{machine.manufacturer}} {{machine.model_name}} ({{machine.year}})</a>
-                                </h1>
-                                <div class="location">
-                                    <a href="{% url 'car_detail' machine.id %}">
-                                        <!--<i class="flaticon-pin"></i>{{car.state}}, {{car.city}} -->
-                                    </a>
-                                </div>
-                                <ul class="facilities-list clearfix">
-                                    
-                                    {% if machine.width %}
-                                    <li>Рабочая ширина: {{machine.width | intcomma}} м</li>
-                                    {%  endif %}
-                                    {% if machine.power %} 
-                                    <li>Двигатель: {{machine.engine_volume}}л   {{machine.power}} л.с. </li>
-                                    {% endif %}
-                                    
-                                    {% if machine.machinery_type == 'SelfPropelledSprayer' %}
-                                    <li>Объём бака: {{machine.tank_capacity}} л</li>
-                                    {% elif machine.machinery_type == 'Plow' %}
-                                    <li>{{machine.bodies}}-корпусной</li>
-                                    <li>Оборотный: {% if machine.reversible %}да{% else %}нет{% endif %}</li>
-                                    <li>Мин. мощность трактора: {{machine.min_power}} л.с.</li>
-                                    {% endif %}
-                                    
-                                </ul>
-                            </div>
+                          </div>
                         </div>
-                        <!-- <div class="car-box-3">
-                            <div class="car-thumbnail">
-                                <a href="{% url 'car_detail' machine.id %}" class="car-img">
-                                    <div class="tag">продается</div>
-                                    <div class="price-box">
-                                        <span>{{machine.price | intcomma }} ₽</span>
-                                    </div>
-                                    <img class="d-block w-100" src="{{machine.photo.url}}" alt="car"  style="min-height: 262px; max-height: 262px;">
-                                </a>
-                                <div class="carbox-overlap-wrapper">
-                                    <div class="overlap-box">
-                                        <div class="overlap-btns-area">
-                                            <div class="car-magnify-gallery">
-                                                <a href="{{machine.photo.url}}" class="overlap-btn">
-                                                    <i class="fa fa-expand"></i>
-                                                    <img class="hidden" src="{{machine.photo.url}}">
-                                                </a>
-                                                {% if machine.photo_1 %}
-                                                <a href="{{machine.photo_1.url}}" class="hidden" >
-                                                    <img class="hidden" src="{{machine.photo_1.url}}">
-                                                </a>
-                                                {% endif %}
-                                                {% if machine.photo_2 %}
-                                                <a href="{{machine.photo_2.url}}" class="hidden">
-                                                    <img class="hidden" src="{{machine.photo_2.url}}">
-                                                </a>
-                                                {% endif %}
-                                                {% if machine.photo_3 %}
-                                                <a href="{{machine.photo_3.url}}" class="hidden">
-                                                    <img class="hidden" src="{{machine.photo_3.url}}">
-                                                </a>
-                                                {% endif %}
-                                                {% if machine.photo_4 %}
-                                                <a href="{{machine.photo_4.url}}" class="hidden" >
-                                                    <img class="hidden" src="{{machine.photo_4.url}}">
-                                                </a>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-							
-                            <div class="detail">
-                                <h1 class="title">
-                                    <a href="{% url 'car_detail' machine.id %}">{{machine.manufacturer}} {{machine.model_name}}</a>
-                                </h1>
-                                <div class="location">
-                                    <a href="{% url 'car_detail' machine.id %}">
-                                        <!-- <i class="flaticon-pin"></i>{{car.state}}, {{car.city}} -->
-                                    <!--</a>
-                                </div>
-                                <ul class="facilities-list clearfix">
-                                    {% if machine.machinery_type == 'Tractor' %}
-                                    <li>{{machine.power}} л.с.</li>
-                                    <li>{{machine.engine_volume}} л</li>
-                                    <li>{{machine.drive_type}}</li>
-                                    <li>{{machine.transmission_type}}</li>
-                                    <li>{{machine.tow_class}}</li>                                    
-                                    {% elif machine.machinery_type == 'SelfPropelledSprayer' %}
-                                    <li>{{machine.fuel_type}}</li>
-                                    <li>{{car.miles | intcomma }} miles</li>
-                                    <li>{{car.transmission}}</li>
-                                    <li>{{car.body_style}}</li>
-                                    <li>{{car.color}}</li>
-                                    <li>{{car.year}}</li>
-                                    {% elif machine.machinery_type == '' %}
-                                    {% endif %}
-                                </ul>
-
-                            </div>
-                        </div> -->
+                        
+                        <div class="detail">
+                          <h1 class="title">
+                            <a href="{% url 'car_detail' machine.id %}">{{machine.get_machinery_type_display}} {{machine.manufacturer}} {{machine.model_name}} ({{machine.year}})</a>
+                          </h1>
+                          <div class="location">
+                            <a href="{% url 'car_detail' machine.id %}"></a>
+                          </div>
+                          <ul class="facilities-list clearfix">
+                            {% if machine.width %}
+                            <li>Рабочая ширина: {{machine.width | intcomma}} м</li>
+                            {% endif %}
+                            {% if machine.power %}
+                            <li>Двигатель: {{machine.engine_volume}}л {{machine.power}} л.с.</li>
+                            {% endif %}
+                            {% if machine.machinery_type == 'SelfPropelledSprayer' %}
+                            <li>Объём бака: {{machine.tank_capacity}} л</li>
+                            {% elif machine.machinery_type == 'Plow' %}
+                            <li>{{machine.bodies}}-корпусной</li>
+                            <li>Оборотный: {% if machine.reversible %}да{% else %}нет{% endif %}</li>
+                            <li>Мин. мощность трактора: {{machine.min_power}} л.с.</li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                      </div>
                     </div>
-            {% endfor %}
+                    {% endfor %}
 
 
 
@@ -223,55 +163,118 @@
                 <div class="sidebar-right">
                     <!-- Advanced search start -->
                     <div class="widget advanced-search2">
-                        <h3 class="sidebar-title">Search Cars</h3>
-                        <form action="{% url 'search' %}" method="">
-                            <div class="form-group">
-                                <input type="text" name="keyword" placeholder="Search by name" class="form-control">
+                        <h3 class="sidebar-title">Filter Machinery</h3>
+                        <div class="filter-section">
+                            <h4>Тип техники</h4>
+                            <div class="checkbox-group" id="manufacturer-filters">
+                                <!-- Will be populated dynamically with JS -->
                             </div>
-
-                            <div class="form-group">
-                                <select class="form-control search-fields" name="model">
-                                    <option selected="true" disabled="disabled">Тип</option>
-                                    {% for type in type_search %}
-                                      <option value="{{type}}">{{type}}</option>
-                                    {% endfor %}
-                                </select>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <h4>Condition</h4>
+                            <div class="checkbox-group">
+                                <div class="form-check">
+                                    <input type="checkbox" id="condition-new" class="form-check-input" value="new">
+                                    <label for="condition-new" class="form-check-label">Новый</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" id="condition-used" class="form-check-input" value="used">
+                                    <label for="condition-used" class="form-check-label">Б/у</label>
+                                </div>
                             </div>
-                            <!-- <div class="form-group">
-                                <select class="form-control search-fields" name="city">
-                                    <option selected="true" disabled="disabled">Location</option>
-                                    {% for city in city_search %}
-                                      <option value="{{city}}">{{city}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div> -->
-                            <div class="form-group">
-                                <select class="form-control search-fields" name="body_style">
-                                    <option selected="true" disabled="disabled">Производитель</option>
-                                    {% for brand in brand_search %}
-                                      <option value="{{brand}}">{{brand}}</option>
-                                    {% endfor %}
-                                </select>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <h4>Year</h4>
+                            <div class="range-inputs">
+                                <div class="range-slider-container">
+                                    <div class="range-values">
+                                        <input type="number" id="min-year" min="1960" max="2025" placeholder="From">
+                                        <span>-</span>
+                                        <input type="number" id="max-year" min="1960" max="2025" placeholder="To">
+                                    </div>
+                                    <div id="year-slider" class="range-slider"></div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <select class="form-control search-fields" name="year">
-                                    <option selected="true" disabled="disabled">Год выпуска</option>
-                                    {% for year in year_search %}
-                                      <option value="{{year}}">{{year}}</option>
-                                    {% endfor %}
-                                </select>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <h4>Price (₽)</h4>
+                            <div class="range-inputs">
+                                <div class="range-slider-container">
+                                    <div class="range-values">
+                                        <input type="number" id="min-price" min="0" placeholder="From">
+                                        <span>-</span>
+                                        <input type="number" id="max-price" min="0" placeholder="To">
+                                    </div>
+                                    <div id="price-slider" class="range-slider"></div>
+                                </div>
                             </div>
-                            <div class="range-slider clearfix">
-                                            <label>Цена</label>
-                                            <div data-min="0" data-max="150000"  data-min-name="min_price" data-max-name="max_price" data-unit="руб" class="range-slider-ui ui-slider" aria-disabled="false"></div>
-                                            <div class="clearfix"></div>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <h4>Machinery Type</h4>
+                            <div class="machinery-type-filters">
+                                <!-- Tractor section -->
+                                <div class="type-section">
+                                    <div class="form-check type-header">
+                                        <input type="checkbox" id="type-tractor" class="form-check-input type-toggle" value="Tractor">
+                                        <label for="type-tractor" class="form-check-label">Трактор</label>
+                                    </div>
+                                    <div class="type-details" id="tractor-details">
+                                        <div class="sub-filter">
+                                            <h5>Тип</h5>
+                                            <div class="checkbox-group">
+                                                <div class="form-check">
+                                                    <input type="checkbox" id="drive-wheeled" class="form-check-input" value="wheeled">
+                                                    <label for="drive-wheeled" class="form-check-label">Колёсный</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" id="drive-tracked" class="form-check-input" value="tracked">
+                                                    <label for="drive-tracked" class="form-check-label">Гусеничный</label>
+                                                </div>
+                                            </div>
                                         </div>
-                            <div class="form-group">
-                                <button class="btn btn-block button-theme btn-md">
-                                    <i class="fa fa-search"></i> Search
-                                </button>
+                                        
+                                        <div class="sub-filter">
+                                            <h5>Мощность (л.с.)</h5>
+                                            <div class="range-inputs">
+                                                <div class="range-slider-container">
+                                                    <div class="range-values">
+                                                        <input type="number" id="min-power" min="0" placeholder="From">
+                                                        <span>-</span>
+                                                        <input type="number" id="max-power" min="0" placeholder="To">
+                                                    </div>
+                                                    <div id="power-slider" class="range-slider"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Additional tractor filters as in JS -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Harvester section -->
+                                <div class="type-section">
+                                    <div class="form-check type-header">
+                                        <input type="checkbox" id="type-harvester" class="form-check-input type-toggle" value="Harvester">
+                                        <label for="type-harvester" class="form-check-label">Комбайн</label>
+                                    </div>
+                                    <div class="type-details" id="harvester-details">
+                                        <!-- Harvester specific filters -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Other machinery types -->
                             </div>
-                        </form>
+                        </div>
+                        
+                        <div class="form-group mt-4">
+                            <button id="filter-button" class="btn btn-block button-theme btn-md">
+                                <i class="fa fa-filter"></i> Filter
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Question start -->
@@ -294,5 +297,5 @@
     </div>
 </div>
 <!-- Featured car end -->
-
 {% endblock %}
+

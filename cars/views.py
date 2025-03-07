@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Machineryy
 from cars.models import Machinery, Tractor, Harvester, SelfPropelledSprayer, Plow, Seeder, Harrow, TrailedSprayer, Mower, Baler
-
+import json
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-
+from django.http import JsonResponse
 # Create your views here.
 def cars(request):
     machinery = [m.get_real_instance() for m in Machinery.objects.all().order_by('-created_date')]
@@ -12,18 +12,23 @@ def cars(request):
     paged_machinery = paginator.get_page(page)
 
     type_search = [choice[1] for choice in Machinery.MACHINERY_TYPES]
-    city_search = Machineryy.objects.values_list('city', flat=True).distinct()
+    #city_search = Machineryy.objects.values_list('city', flat=True).distinct()
     year_search = Machinery.objects.values_list('year', flat=True).distinct()
     brand_search = Machinery.objects.values_list('manufacturer', flat=True).distinct()
     
     data = {
         'machinery': paged_machinery,
         'type_search': type_search,
-        'city_search': city_search,
+        #'city_search': city_search,
         'year_search': year_search,
-        'brand_search': brand_search,
+        'brand_search': json.dumps(list(brand_search)),  
     }
     return render(request, 'cars/cars.html', data)
+
+def get_manufacturers(request):
+    """Возвращает список производителей в формате JSON"""
+    brand_search = list(Machinery.objects.values_list('manufacturer', flat=True).distinct())
+    return JsonResponse({'manufacturers': brand_search})
 
 def car_detail(request, id):
     this_machinery = get_object_or_404(Machinery, pk=id).get_real_instance()
