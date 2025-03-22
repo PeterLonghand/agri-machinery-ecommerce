@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sites',
     'allauth',
-    'allauth.account',
+    'allauth.account',    
+    'rest_framework',
+    'django_filters',
     # 'allauth.socialaccount',
 
     # # Providers
@@ -125,6 +127,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+REST_FRAMEWORK = {'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+                  'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+                  'PAGE_SIZE': 8
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

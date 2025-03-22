@@ -329,6 +329,10 @@ button:focus {
   border-radius: 3px;
 }
 
+.btn-outline-secondary {
+  color: #464646;
+}
+
 .btn:focus,
 .btn:active,
 .btn:focus {
@@ -1949,7 +1953,8 @@ input[type="checkbox"]:checked + label:before {
 }
 
 .bootstrap-select .bs-searchbox .form-control {
-  margin-bottom: 0;
+  /* margin-bottom: 0;
+   */
   width: 100%;
   float: none;
   height: 36px;
@@ -2199,9 +2204,9 @@ input[type="checkbox"]:checked + label:before {
   background: linear-gradient(
     to top,
     rgba(47, 45, 45, 0.9) 0%,
-    rgba(0, 0, 0, 0.45) 35%,
-    rgba(2, 2, 2, 0) 60%,
-    rgba(0, 0, 0, 0) 100%
+    rgba(0, 0, 0, 0.45) 12%,
+    rgba(2, 2, 2, 0) 45%,
+    rgba(0, 0, 0, 0) 80%
   );
   border-radius: 4px 4px 0 0;
   opacity: 1;
@@ -2209,7 +2214,7 @@ input[type="checkbox"]:checked + label:before {
 
 .carbox-overlap-wrapper {
   visibility: hidden;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.202);
   height: 100%;
   width: 100%;
   position: absolute;
@@ -2252,8 +2257,14 @@ input[type="checkbox"]:checked + label:before {
   visibility: visible;
   top: 0;
   cursor: pointer;
-  transition: all 0.15s linear;
+  transition: all 0.5s linear;
 }
+
+/* .car-thumbnail img {
+  width: 100%;
+  height: 262px;
+  object-fit: cover; /* сохраняя пропорции. или object-fit: contain; - всё изображение, возможно с пустыми полями
+} */
 
 .overlap-btns-area img {
   display: none;
@@ -2860,7 +2871,7 @@ input[type="checkbox"]:checked + label:before {
 }
 
 .slick-btn .slick-arrow-buton {
-  color: #ff214f;
+  color: #75a300;
 }
 
 .slick-btn .sab-4 {
@@ -2962,6 +2973,7 @@ input[type="checkbox"]:checked + label:before {
 
 /** Car box 3 **/
 .car-box-3 {
+  height: 470px;
   position: relative;
   margin-bottom: 30px;
   background: #fff;
@@ -2970,11 +2982,11 @@ input[type="checkbox"]:checked + label:before {
 }
 
 .car-box-3:hover {
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.33);
 }
 
 .car-box-3 .detail {
-  padding: 25px 20px;
+  padding: 10px 20px;
 }
 
 .car-box-3 .custom-list {
@@ -4036,13 +4048,13 @@ footer {
   padding: 20px 0;
   text-align: center;
   margin-bottom: 0;
-  background: #202c54;
+  background: #6e9019;
   color: #fff;
 }
 
 .sub-footer p {
   margin-bottom: 0;
-  color: #b3b3b3;
+  color: #ffffff;
   text-align: left;
   line-height: 44px;
 }
@@ -4544,7 +4556,7 @@ footer {
   background: rgba(0, 0, 0, 0.04) url(../img/bg-img-6.jpg) top left repeat;
   background-size: cover;
   width: 100%;
-  padding: 100px 0 70px;
+  padding: 60px 0 70px;
 }
 
 .service-box ul {
@@ -5463,6 +5475,10 @@ footer {
 .pagination > li > .active {
   color: #fff;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.page-item.active > .page-link {
+  background-color: /* #ff8c00 */ #82b403 !important;
 }
 
 .page-link:focus {
@@ -6800,7 +6816,8 @@ input[type="radio"] {
 .heading-car h3 {
   font-weight: 500;
   font-size: 25px;
-  text-transform: uppercase;
+  /* text-transform: uppercase;
+   */
   margin-bottom: 10px;
 }
 
@@ -8475,8 +8492,13 @@ input[type="tel"] {
     padding-top: 100px;
   }
 
-  .banner .w-100 {
+  /*   .banner .w-100 {
     width: auto !important;
+  } */
+  .d-blockk.ww-100.hh-100 {
+    width: 100% !important;
+    height: 100% !important; /* 
+    object-fit: contain !important; */
   }
 
   .testimonial-3 .testimonial-info {
@@ -9906,10 +9928,26 @@ textarea::-webkit-input-placeholder {
   color: #d5111a;
 }
 a.nav-link.active {
-  color: #d5111a !important;
+  color: #82b403 !important;
 }
 
 .tabbing-box .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
   color: #fff !important;
+}
+
+.car-thumbnail img.d-block {
+  width: auto !important; /* автоширина заместо 100% */
+  height: 262px !important;
+  max-width: 100% !important; /* чтобы изображение не выходило за границы контейнера */
+  object-fit: cover !important;
+  display: block;
+  margin: 0 auto; /* центрирование */
+}
+
+.condition-tag {
+  background-color: #82b403 !important;
+}
+.top-addr{
+  color: #ffffff !important;
 }

@@ -10,31 +10,31 @@
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner banner-slider-inner text-center">
             <div class="carousel-item banner-max-height active item-bg">
-                <img class="d-block w-100 h-100" src="{% static 'img/bg_kirovets_1.jpg' %}" alt="banner">
+                <img class="d-blockk ww-100 hh-100" src="{% static 'img/bg_kirovets_1.jpg' %}" alt="banner">
                 <div class="carousel-content container banner-info-2 bi-2 text-left">
                 
-                    <h3>Тракторы для любых целей</h3>
-                    <h5>Allow us to guide you through the innovative stress<br>
-                        free approach in finding your dream car.</h5>
-                    <a href="{% url 'services' %}" class="btn btn-lg btn-theme">Read More</a>
+                    <h3>Кировец К-746М <br>Премиум</h3>
+                    <h5>Трактор, который работает на результат. <br>Теперь с новым двигателем Weichai.<br>
+                    Познакомьтесь с флагманом Петербургского Тракторного Завода<br></h5>
+                    <a href="{% url 'car_detail' 7 %}" class="btn btn-lg btn-theme">Подробнее</a>
                 </div>
             </div>
             <div class="carousel-item banner-max-height item-bg">
-                <img class="d-block w-100 h-100" src="{% static 'img/bg_night.jpg' %}" alt="banner">
+                <img class="d-blockk ww-100 hh-100" src="{% static 'img/bg_night.jpg' %}" alt="banner">
                 <div class="carousel-content container banner-info-2 bi-2 text-left">
-                    <h3>Fuel for Soul</h3>
-                    <h5>Allow us to guide you through the innovative stress<br>
-                        free approach in finding your dream car.</h5>
-                    <a href="{% url 'services' %}" class="btn btn-lg btn-theme">Read More</a>
-                </div>
+                    <h3>С НАМИ ВЕСНА<br>НАЧИНАЕТСЯ РАНЬШЕ</h3>
+                    <h5>Первый в поле — первый в урожае.
+                        <br>Безупречное начало нового сезона с техникой,
+                        <br>которая позволяет выйти в поле точно в срок и без промедлений.<br></h5>
+                        <a href="{% url 'cars' %}?preset=seeding" class="btn btn-lg btn-theme">Техника для сева и обработки</a>
+                    </div>
             </div>
             <div class="carousel-item banner-max-height item-bg">
-                <img class="d-block w-100 h-100" src="{% static 'img/bg_kirovets_3.jpg' %}" alt="banner">
+                <img class="d-block w-100 h-100" src="{% static 'img/bg_tech.jpg' %}" alt="banner">
                 <div class="carousel-content container banner-info-2 bi-2 text-left">
-                    <h3>Car for Everyone</h3>
-                    <h5>Allow us to guide you through the innovative stress<br>
-                        free approach in finding your dream car.</h5>
-                    <a href="{% url 'services' %}" class="btn btn-lg btn-theme">Read More</a>
+                    <h3>Ваше поле. <br>Наша техника.<br> Идеальный результат.</h3>
+                    <h5>Надежные решения для всех этапов сельскохозяйственных работ.</h5>
+                    <a href="{% url 'cars' %}" class="btn btn-lg btn-theme">В КАТАЛОГ</a>
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
                           <option value="{{brand}}">{{brand}}</option>
                         {% endfor %}
                     </select>
-                </div>
+                </div><!-- 
 	
                 <div class="form-group">
                     <select class="form-control search-fields" name="city">
@@ -70,7 +70,7 @@
                           <option value="{{city}}">{{city}}</option>
                         {% endfor %}
                     </select>
-                </div>
+                </div> -->
                 <div class="form-group">
                     <select class="form-control search-fields" name="year">
                         <option selected="true" disabled="disabled">Год выпуска</option>
@@ -114,8 +114,8 @@
     <div class="container">
         <!-- Main title -->
         <div class="main-title">
-            <h1>Featured <span>Cars</span></h1>
-            <p>Amongst many of our available cars, here are some few picks that you might have an interest in.</p>
+            <h1>Новая <span>техника</span></h1>
+            <p>Ваше поле заслуживает первенства: современные агрегаты без единого часа в поле.</p>
         </div>
         <!-- Slick slider area start -->
         <div class="slick-slider-area clearfix">
@@ -125,7 +125,7 @@
                     <div class="car-box-3">
                         <div class="car-thumbnail">
                             <a href="{% url 'car_detail' machine.id %}" class="car-img">
-                                <div class="tag-2">НОВЫЙ</div>
+                                <div class="tag-2 condition-tag bg-success">НОВЫЙ</div>
                                 <div class="price-box">
                                     <span>{{machine.price | intcomma}} ₽</span>
                                 </div>
@@ -216,7 +216,7 @@
     <div class="container">
         <!-- Main title -->
         <div class="main-title">
-            <h1>Latest <span>Cars</span></h1>
+            <h1>Последние <span>поступления</span></h1>
             <p></p>
         </div>
         <div class="row">
@@ -307,14 +307,13 @@
 
 
 <!-- Our team start -->
-<div class="our-team content-area bg-grea-3">
+<!-- <div class="our-team content-area bg-grea-3">
     <div class="container">
-        <!-- Main title -->
+        
         <div class="main-title">
             <h1>Executive <span>Team</span></h1>
             <p>Team working behind maintaining the quality of our Car Dealership Website.</p>
         </div>
-        <!-- Slick slider area start -->
         <div class="slick-slider-area clearfix">
             <div class="row slick-carousel" data-slick='{"slidesToShow": 4, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": 2}}, {"breakpoint": 768,"settings":{"slidesToShow": 1}}]}'>
               {% for team in teams %}
@@ -340,7 +339,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <!-- Our team end -->
 
 <!-- Intro section start -->
@@ -349,11 +348,11 @@
         <div class="row">
             <div class="col-lg-9 col-md-8 col-sm-12">
                 <div class="intro-text">
-                    <h3>Do You Have Questions ?</h3>
+                    <h3>Есть вопрос?</h3>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-12">
-                <a href="{% url 'contact' %}" class="btn btn-md">Get in Touch</a>
+                <a href="{% url 'contact' %}" class="btn btn-md">Свяжитесь с нами</a>
             </div>
         </div>
     </div>

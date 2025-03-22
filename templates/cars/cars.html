@@ -1,301 +1,552 @@
+
 {% extends 'base.html' %}
-
-
-{% block title %}Каталог техники{% endblock %}
+{% block title %}Каталог сельхозтехники{% endblock %}
 {% block content %}
-
 {% load humanize %}
-<!-- Sub banner start -->
+<style>
+    /* Общие стили для слайдеров и инпутов */
+.range-slider {
+    margin-top: 2px !important;
+    margin-bottom: 20px;
+}
 
+.range-inputs {
+    display: flex;
+    align-items: center;
+    margin-bottom: 7px;
+    gap: 10px;
+}
+
+.range-inputs input {
+    flex: 1;
+    min-width: 0;
+
+
+}
+
+.slider-range {
+    margin-bottom: 50px !important; ;
+    height: 5px; 
+}
+.form-group-first {
+    margin-top: 0px;
+    padding-top: 0px ;
+    padding-bottom: 0px ;
+}
+.form-group-next {
+ margin-top: 65px;
+}
+.col-form-label {
+    margin-top: 0px !important ;
+    margin-bottom: 0px !important;
+}
+.form-control {
+    margin-top: 0px !important;
+}
+/* Стили для подфильтров в раскрывающихся секциях */
+/* .after-slider {
+    margin-top: 50px;
+    padding-top: 0px;
+}  */
+.machinery-details {
+    /* padding: 10px 0 10px 20px;
+     */margin-bottom: 25px;
+     margin-top: 5px;
+    border-left: 1px solid #eee;
+}
+
+/* .machinery-details label {
+    margin-top: 1px !important;
+    margin-bottom: 1px !important;
+} */
+
+.sub-filter {
+min-height: 90px;
+}
+.sub-filter label {
+    /* margin-top: 1px !important;
+     */margin-bottom: 2px !important;
+}
+
+.sub-filter-checkbox {
+    margin-top: 20px;
+    height: auto;
+}
+
+
+#condition-options, 
+#drive-type-options,
+#transmission-type-options,
+#threshing-type-options,
+#seed-type-options,
+#tow-class-options {
+    margin-bottom: 10px;
+}
+
+
+
+/* Исправление отступов для чекбоксов */
+.checkbox {
+    margin-bottom: 10px;
+}
+
+/* Исправление для кнопок фильтра */
+.form-group.mt-4 {
+    margin-top: 30px !important;
+}
+</style>
+
+<!-- Banner Section -->
 <div class="sub-banner overview-bgi">
     <div class="container breadcrumb-area">
         <div class="breadcrumb-areas">
-            <h1>Our Car Inventory</h1>
+            <h1>Каталог сельхозтехники</h1>
             <ul class="breadcrumbs">
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li class="active">Cars</li>
+                <li><a href="{% url 'home' %}">Главная</a></li>
+                <li class="active">Каталог</li>
             </ul>
         </div>
     </div>
 </div>
-<!-- Sub Banner end -->
 
-
-<!-- Featured car start -->
-<div class="featured-car content-area">
+<!-- Main Content Section -->
+<div class="featured-car content-area" id="machinery-container-area">
     <div class="container">
         <div class="row">
+            <!-- Left Column: Machinery List -->
             <div class="col-lg-8 col-md-12">
-
-                <div class="row">
-                    {% for machine in machinery %}
-                    <div class="col-lg-6 col-md-6">
-                      <div class="car-box-3" 
-                           data-type="{{ machine.machinery_type }}"
-                           data-manufacturer="{{ machine.manufacturer }}"
-                           data-model="{{ machine.model_name }}"
-                           data-year="{{ machine.year }}"
-                           data-price="{{ machine.price }}"
-                           data-condition="{% if machine.is_new %}new{% else %}used{% endif %}"
-                           {% if machine.power %}data-power="{{ machine.power }}"{% endif %}
-                           {% if machine.engine_volume %}data-engine-volume="{{ machine.engine_volume }}"{% endif %}
-                           {% if machine.width %}data-width="{{ machine.width }}"{% endif %}
-                           {% if machine.drive_type %}data-drive-type="{{ machine.drive_type }}"{% endif %}
-                           {% if machine.transmission_type %}data-transmission="{{ machine.transmission_type }}"{% endif %}
-                           {% if machine.tow_class %}data-tow-class="{{ machine.tow_class }}"{% endif %}
-                           {% if machine.tank_capacity %}data-tank-capacity="{{ machine.tank_capacity }}"{% endif %}
-                           {% if machine.bodies %}data-bodies="{{ machine.bodies }}"{% endif %}
-                           {% if machine.reversible %}data-reversible="yes"{% else %}data-reversible="no"{% endif %}
-                           {% if machine.min_power %}data-min-power="{{ machine.min_power }}"{% endif %}
-                           {% if machine.bunker_volume %}data-bunker-volume="{{ machine.bunker_volume }}"{% endif %}
-                           {% if machine.threshing_type %}data-threshing-type="{{ machine.threshing_type }}"{% endif %}>
-                        
-                        <div class="car-thumbnail">
-                          <a href="{% url 'car_detail' machine.id %}" class="car-img">
-                            <div class="tag-2">{% if machine.is_new %}НОВЫЙ{% else %}Б/У{% endif %}</div>
-                            <div class="price-box"><span>{{machine.price | intcomma}} ₽</span></div>
-                            <img class="d-block w-100" src="{{machine.photo.url}}" alt="car" style="min-height: 262px; max-height: 262px;">
-                          </a>
-                          <div class="carbox-overlap-wrapper">
-                            <div class="overlap-box">
-                              <div class="overlap-btns-area">
-                                <div class="car-magnify-gallery">
-                                  <a href="{{machine.photo.url}}" class="overlap-btn">
-                                    <i class="fa fa-expand"></i>
-                                    <img class="hidden" src="{{machine.photo.url}}">
-                                  </a>
-                                  {% if machine.photo_1 %}
-                                  <a href="{{machine.photo_1.url}}" class="hidden">
-                                    <img class="hidden" src="{{machine.photo_1.url}}">
-                                  </a>
-                                  {% endif %}
-                                  {% if machine.photo_2 %}
-                                  <a href="{{machine.photo_2.url}}" class="hidden">
-                                    <img class="hidden" src="{{machine.photo_2.url}}">
-                                  </a>
-                                  {% endif %}
-                                  {% if machine.photo_3 %}
-                                  <a href="{{machine.photo_3.url}}" class="hidden">
-                                    <img class="hidden" src="{{machine.photo_3.url}}">
-                                  </a>
-                                  {% endif %}
-                                  {% if machine.photo_4 %}
-                                  <a href="{{machine.photo_4.url}}" class="hidden">
-                                    <img class="hidden" src="{{machine.photo_4.url}}">
-                                  </a>
-                                  {% endif %}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div class="detail">
-                          <h1 class="title">
-                            <a href="{% url 'car_detail' machine.id %}">{{machine.get_machinery_type_display}} {{machine.manufacturer}} {{machine.model_name}} ({{machine.year}})</a>
-                          </h1>
-                          <div class="location">
-                            <a href="{% url 'car_detail' machine.id %}"></a>
-                          </div>
-                          <ul class="facilities-list clearfix">
-                            {% if machine.width %}
-                            <li>Рабочая ширина: {{machine.width | intcomma}} м</li>
-                            {% endif %}
-                            {% if machine.power %}
-                            <li>Двигатель: {{machine.engine_volume}}л {{machine.power}} л.с.</li>
-                            {% endif %}
-                            {% if machine.machinery_type == 'SelfPropelledSprayer' %}
-                            <li>Объём бака: {{machine.tank_capacity}} л</li>
-                            {% elif machine.machinery_type == 'Plow' %}
-                            <li>{{machine.bodies}}-корпусной</li>
-                            <li>Оборотный: {% if machine.reversible %}да{% else %}нет{% endif %}</li>
-                            <li>Мин. мощность трактора: {{machine.min_power}} л.с.</li>
-                            {% endif %}
-                          </ul>
-                        </div>
-                      </div>
+                <!-- Result Count & Sort Options -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h4 id="result-count">Найдено: <span>0</span> единиц техники</h4>
                     </div>
-                    {% endfor %}
-
-
-
+                    <div class="col-md-6 text-right">
+                        <select id="sort-select" class="form-control">
+                            <option value="-created_date">Сначала новые поступления</option>
+                            <option value="price">Сначала дешевле</option>
+                            <option value="-price">Сначала дороже</option>
+                            <option value="-year">Сначала новее (по году)</option>
+                            <option value="year">Сначала старше (по году)</option>
+                        </select>
+                    </div>
                 </div>
-                <!-- Page navigation start -->
+                
+                <!-- Machinery Cards -->
+                <div class="row" id="machinery-list">
+                    <!-- Карточки техники будут добавлены через JavaScript -->
+                </div>
+                
+                <!-- Pagination -->
                 <div class="pagination-box p-box-2 text-center">
                     <nav aria-label="Page navigation example">
-                      {% if machinery.has_other_pages %}
-                        <ul class="pagination">
-                          {% if machinery.has_previous %}
-                              <li class="page-item">
-                                  <a class="page-link" href="?page={{machinery.previous_page_number}}"><i class="fa fa-angle-left"></i></a>
-                              </li>
-                          {% else %}
-                            <li class="page-item disabled">
-                                <a class="page-link"><i class="fa fa-angle-left"></i></a>
-                            </li>
-                          {% endif %}
-
-                          {% for i in machinery.paginator.page_range %}
-                            {% if machinery.number == i %}
-                              <li class="page-item"><a class="page-link active" href="#">{{i}}</a></li>
-                            {% else %}
-                              <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
-                            {% endif %}
-                          {% endfor %}
-
-                          {% if machinery.has_next %}
-                              <li class="page-item">
-                                  <a class="page-link" href="?page={{machinery.next_page_number}}"><i class="fa fa-angle-right"></i></a>
-                              </li>
-                          {% else %}
-                            <li class="page-item disabled">
-                                <a class="page-link"><i class="fa fa-angle-right"></i></a>
-                            </li>
-                          {% endif %}
-
+                        <ul class="pagination" id="pagination-container">
+                            <!-- Пагинация будет добавлена через JavaScript -->
                         </ul>
-                      {% endif %}
                     </nav>
                 </div>
             </div>
-			
+            
+            <!-- Right Column: Filters -->
             <div class="col-lg-4 col-md-12">
                 <div class="sidebar-right">
-                    <!-- Advanced search start -->
                     <div class="widget advanced-search2">
-                        <h3 class="sidebar-title">Filter Machinery</h3>
-                        <div class="filter-section">
-                            <h4>Тип техники</h4>
-                            <div class="checkbox-group" id="manufacturer-filters">
-                                <!-- Will be populated dynamically with JS -->
-                            </div>
-                        </div>
-                        
-                        <div class="filter-section">
-                            <h4>Condition</h4>
-                            <div class="checkbox-group">
-                                <div class="form-check">
-                                    <input type="checkbox" id="condition-new" class="form-check-input" value="new">
-                                    <label for="condition-new" class="form-check-label">Новый</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" id="condition-used" class="form-check-input" value="used">
-                                    <label for="condition-used" class="form-check-label">Б/у</label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="filter-section">
-                            <h4>Year</h4>
-                            <div class="range-inputs">
-                                <div class="range-slider-container">
-                                    <div class="range-values">
-                                        <input type="number" id="min-year" min="1960" max="2025" placeholder="From">
-                                        <span>-</span>
-                                        <input type="number" id="max-year" min="1960" max="2025" placeholder="To">
-                                    </div>
-                                    <div id="year-slider" class="range-slider"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="filter-section">
-                            <h4>Price (₽)</h4>
-                            <div class="range-inputs">
-                                <div class="range-slider-container">
-                                    <div class="range-values">
-                                        <input type="number" id="min-price" min="0" placeholder="From">
-                                        <span>-</span>
-                                        <input type="number" id="max-price" min="0" placeholder="To">
-                                    </div>
-                                    <div id="price-slider" class="range-slider"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="filter-section">
-                            <h4>Machinery Type</h4>
-                            <div class="machinery-type-filters">
-                                <!-- Tractor section -->
-                                <div class="type-section">
-                                    <div class="form-check type-header">
-                                        <input type="checkbox" id="type-tractor" class="form-check-input type-toggle" value="Tractor">
-                                        <label for="type-tractor" class="form-check-label">Трактор</label>
-                                    </div>
-                                    <div class="type-details" id="tractor-details">
-                                        <div class="sub-filter">
-                                            <h5>Тип</h5>
-                                            <div class="checkbox-group">
-                                                <div class="form-check">
-                                                    <input type="checkbox" id="drive-wheeled" class="form-check-input" value="wheeled">
-                                                    <label for="drive-wheeled" class="form-check-label">Колёсный</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input type="checkbox" id="drive-tracked" class="form-check-input" value="tracked">
-                                                    <label for="drive-tracked" class="form-check-label">Гусеничный</label>
+                        <h3 class="sidebar-title">Фильтры техники</h3>
+                        <form id="filter-form">
+                            <!-- Machinery Type Filters -->
+                            <div class="form-group">
+                                <label>Тип техники</label>
+                                <div class="machinery-types">
+                                    <!-- Тракторы -->
+                                    <div class="machinery-type-item">
+                                        <div class="checkbox checkbox-theme">
+                                            <input type="checkbox" id="type-tractor" name="machinery_type" value="Tractor">
+                                            <label for="type-tractor">Тракторы (<span id="count-tractor">0</span>)</label>
+                                        </div>
+                                        <div class="machinery-details" id="details-tractor" style="display:none; padding-left: 20px;">
+                                            <!-- Тип привода -->
+                                            <div class="sub-filter">
+                                                <label>Тип привода</label>
+                                                <div id="drive-type-options">
+                                                    <!-- Будет заполнено через JavaScript -->
                                                 </div>
                                             </div>
-                                        </div>
-                                        
-                                        <div class="sub-filter">
-                                            <h5>Мощность (л.с.)</h5>
-                                            <div class="range-inputs">
-                                                <div class="range-slider-container">
-                                                    <div class="range-values">
-                                                        <input type="number" id="min-power" min="0" placeholder="From">
-                                                        <span>-</span>
-                                                        <input type="number" id="max-power" min="0" placeholder="To">
+                                            
+                                            <!-- Мощность -->
+                                            <div class="sub-filter">
+                                                <label>Мощность (л.с.)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="power-min" name="power_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="power-max" name="power_max" class="form-control" placeholder="До">
                                                     </div>
-                                                    <div id="power-slider" class="range-slider"></div>
+                                                    <div id="power-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Объем двигателя -->
+                                            <div class="sub-filter">
+                                                <label>Объем двигателя (л)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="engine-volume-min" name="engine_volume_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="engine-volume-max" name="engine_volume_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="engine-volume-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Тип КПП -->
+                                            <div class="sub-filter">
+                                                <label>Тип КПП</label>
+                                                <div id="transmission-type-options">
+                                                    <!-- Будет заполнено через JavaScript -->
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Тяговый класс -->
+                                            <div class="sub-filter">
+                                                <label>Тяговый класс</label>
+                                                <div id="tow-class-options">
+                                                    <!-- Будет заполнено через JavaScript -->
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        <!-- Additional tractor filters as in JS -->
                                     </div>
-                                </div>
-                                
-                                <!-- Harvester section -->
-                                <div class="type-section">
-                                    <div class="form-check type-header">
-                                        <input type="checkbox" id="type-harvester" class="form-check-input type-toggle" value="Harvester">
-                                        <label for="type-harvester" class="form-check-label">Комбайн</label>
+                                    
+                                    <!-- Комбайны -->
+                                    <div class="machinery-type-item">
+                                        <div class="checkbox checkbox-theme">
+                                            <input type="checkbox" id="type-harvester" name="machinery_type" value="Harvester">
+                                            <label for="type-harvester">Комбайны (<span id="count-harvester">0</span>)</label>
+                                        </div>
+                                        <div class="machinery-details" id="details-harvester" style="display:none; padding-left: 20px;">
+                                            <!-- Мощность -->
+                                            <div class="sub-filter">
+                                                <label>Мощность (л.с.)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="harvester-power-min" name="harvester_power_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="harvester-power-max" name="harvester_power_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="harvester-power-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Объем бункера -->
+                                            <div class="sub-filter">
+                                                <label>Объем бункера (м³)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="bunker-volume-min" name="bunker_volume_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="bunker-volume-max" name="bunker_volume_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="bunker-volume-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Тип системы обмолота -->
+                                            <div class="sub-filter">
+                                                <label>Тип системы обмолота</label>
+                                                <div id="threshing-type-options">
+                                                    <!-- Будет заполнено через JavaScript -->
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="type-details" id="harvester-details">
-                                        <!-- Harvester specific filters -->
+                                    
+                                    <!-- Самоходные опрыскиватели -->
+                                    <div class="machinery-type-item">
+                                        <div class="checkbox checkbox-theme">
+                                            <input type="checkbox" id="type-self-sprayer" name="machinery_type" value="SelfPropelledSprayer">
+                                            <label for="type-self-sprayer">Самоходные опрыскиватели (<span id="count-selfpropelledsprayer">0</span>)</label>
+                                        </div>
+                                        <div class="machinery-details" id="details-self-sprayer" style="display:none; padding-left: 20px;">
+                                            <!-- Мощность -->
+                                            <div class="sub-filter">
+                                                <label>Мощность (л.с.)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="self-sprayer-power-min" name="self_sprayer_power_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="self-sprayer-power-max" name="self_sprayer_power_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="self-sprayer-power-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Рабочая ширина -->
+                                            <div class="sub-filter">
+                                                <label>Рабочая ширина (м)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="self-sprayer-width-min" name="self_sprayer_width_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="self-sprayer-width-max" name="self_sprayer_width_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="self-sprayer-width-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Объем бака -->
+                                            <div class="sub-filter">
+                                                <label>Объем бака (л)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="self-sprayer-tank-min" name="self_sprayer_tank_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="self-sprayer-tank-max" name="self_sprayer_tank_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="self-sprayer-tank-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <!-- Other machinery types -->
-                            </div>
-                        </div>
-                        
-                        <div class="form-group mt-4">
-                            <button id="filter-button" class="btn btn-block button-theme btn-md">
-                                <i class="fa fa-filter"></i> Filter
-                            </button>
-                        </div>
-                    </div>
 
-                    <!-- Question start -->
-                    <div class="widget question widget-3">
-                        <h5 class="sidebar-title">Follow Us On:</h5>
-                        <div class="social-list clearfix">
-                            <ul>
-                                <li><a href="https://codeastro.com/" class="facebook-bg"><i class="fa fa-facebook"></i></a></li>
-                                <li><a href="https://codeastro.com/" class="twitter-bg"><i class="fa fa-twitter"></i></a></li>
-                                <li><a href="https://codeastro.com/" class="google-bg"><i class="fa fa-google-plus"></i></a></li>
-                                <li><a href="https://codeastro.com/" class="rss-bg"><i class="fa fa-rss"></i></a></li>
-                                <li><a href="https://codeastro.com/" class="linkedin-bg"><i class="fa fa-linkedin"></i></a></li>
-                            </ul>
-                        </div>
-						
+                                    <div class="machinery-type-item">
+                                        <div class="checkbox checkbox-theme">
+                                            <input type="checkbox" id="type-trailed-sprayer" name="machinery_type" value="TrailedSprayer">
+                                            <label for="type-trailed-sprayer">Прицепные опрыскиватели (<span id="count-trailedsprayer">0</span>)</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Плуги -->
+                                    <div class="machinery-type-item">
+                                        <div class="checkbox checkbox-theme">
+                                            <input type="checkbox" id="type-plow" name="machinery_type" value="Plow">
+                                            <label for="type-plow">Плуги (<span id="count-plow">0</span>)</label>
+                                        </div>
+                                        <div class="machinery-details" id="details-plow" style="display:none; padding-left: 20px;">
+                                            <!-- Рабочая ширина -->
+                                            <div class="sub-filter">
+                                                <label>Рабочая ширина (м)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="plow-width-min" name="plow_width_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="plow-width-max" name="plow_width_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="plow-width-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Количество корпусов -->
+                                            <div class="sub-filter">
+                                                <label>Количество корпусов</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="bodies-min" name="bodies_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="bodies-max" name="bodies_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="bodies-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Оборотный -->
+                                            <div class="sub-filter-checkbox">
+                                                <div class="checkbox checkbox-theme">
+                                                    <input type="checkbox" id="reversible" name="reversible" value="true">
+                                                    <label for="reversible">Оборотный</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Сеялки -->
+                                    <div class="machinery-type-item">
+                                        <div class="checkbox checkbox-theme">
+                                            <input type="checkbox" id="type-seeder" name="machinery_type" value="Seeder">
+                                            <label for="type-seeder">Сеялки (<span id="count-seeder">0</span>)</label>
+                                        </div>
+                                        <div class="machinery-details" id="details-seeder" style="display:none; padding-left: 20px;">
+                                            <!-- Рабочая ширина -->
+                                            <div class="sub-filter">
+                                                <label>Ширина высева (м)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="seeder-width-min" name="seeder_width_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="seeder-width-max" name="seeder_width_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="seeder-width-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Ёмкость бункера семян -->
+                                            <div class="sub-filter">
+                                                <label>Ёмкость бункера семян</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="seed-tank-capacity-min" name="seed_tank_capacity_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="seed-tank-capacity-max" name="seed_tank_capacity_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="seed-tank-capacity-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Емкость бункера удобрений-->
+                                            <div class="sub-filter">
+                                                <label>Емкость бункера удобрений</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="fert-tank-capacity-min" name="fert_tank_capacity_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="fert-tank-capacity-max" name="fert_tank_capacity_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="fert-tank-capacity-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Тип сеялки -->
+                                            <div class="sub-filter">
+                                                <label>Тип сеялки</label>
+                                                <div id="seed-type-options">
+                                                    <!-- Будет заполнено через JavaScript -->
+                                                </div>
+                                            </div>
+
+                                            
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="machinery-type-item">
+                                        <div class="checkbox checkbox-theme">
+                                            <input type="checkbox" id="type-harrow" name="machinery_type" value="Harrow">
+                                            <label for="type-harrow">Бороны (<span id="count-harrow">0</span>)</label>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    
+                                    <div class="machinery-type-item">
+                                        <div class="checkbox checkbox-theme">
+                                            <input type="checkbox" id="type-mower" name="machinery_type" value="Mower">
+                                            <label for="type-mower">Косилки (<span id="count-mower">0</span>)</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="machinery-type-item">
+                                        <div class="checkbox checkbox-theme">
+                                            <input type="checkbox" id="type-baler" name="machinery_type" value="Baler">
+                                            <label for="type-baler">Пресс-подборщики (<span id="count-baler">0</span>)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Common Filters -->
+                            <div class="form-group">
+                                <label>Производители</label>
+                                <div id="manufacturers-container">
+                                    <!-- Будет заполнено через JavaScript -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-first">
+                                <label class="col-form-label">Год выпуска</label>
+                                <div class="range-slider">
+                                    <div class="range-inputs">
+                                        <input type="number" id="year-min" name="year_min" class="form-control" placeholder="От">
+                                        <span>—</span>
+                                        <input type="number" id="year-max" name="year_max" class="form-control" placeholder="До">
+                                    </div>
+                                    <div id="year-slider" class="slider-range"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-next">
+                                <label class="col-form-label">Цена (₽)</label>
+                                <div class="range-slider">
+                                    <div class="range-inputs">
+                                        <input type="number" id="price-min" name="price_min" class="form-control" placeholder="От">
+                                        <span>—</span>
+                                        <input type="number" id="price-max" name="price_max" class="form-control" placeholder="До">
+                                    </div>
+                                    <div id="price-slider" class="slider-range"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-next">
+                                <label>Состояние</label>
+                                <div id="condition-options">
+                                    <div class="checkbox checkbox-theme">
+                                        <input type="checkbox" id="condition-new" name="condition_in" value="new">
+                                        <label for="condition-new">Новый</label>
+                                    </div>
+                                    <div class="checkbox checkbox-theme">
+                                        <input type="checkbox" id="condition-used" name="condition_in" value="used">
+                                        <label for="condition-used">Б/У</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Filter Buttons -->
+                            <div class="form-group mt-4 d-flex justify-content-between">
+                                <button id="filter-button" type="button" class="btn button-theme btn-md">
+                                    <i class="fa fa-filter"></i> Применить
+                                </button>
+                                <button id="reset-button" type="button" class="btn btn-outline-secondary btn-md">
+                                    <i class="fa fa-refresh"></i> Сбросить
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Featured car end -->
+
+<!-- Template for Machinery Card -->
+<template id="machinery-card-template">
+    <div class="col-lg-6 col-md-6">
+        <div class="car-box-3">
+            <div class="car-thumbnail">
+                <a href="#" class="car-img machinery-link">
+                    <div class="tag-2 condition-tag"></div>
+                    <div class="price-box"><span class="price-text"></span></div>
+                    <img class="d-block w-100" src="" alt="machinery" style="min-height: 262px; max-height: 262px;">
+                </a>
+                <div class="carbox-overlap-wrapper">
+                    <div class="overlap-box">
+                        <div class="overlap-btns-area">
+                            <div class="car-magnify-gallery">
+                                <a href="" class="overlap-btn">
+                                    <i class="fa fa-expand"></i>
+                                    <img class="hidden" src="">
+                                </a>
+                                <!-- Дополнительные фото будут добавлены через JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="detail">
+                <h1 class="title"><a href="#" class="machinery-title machinery-link"></a></h1>
+                <div class="location">
+                    <a href="#" class="machinery-link"></a>
+                </div>
+                <ul class="facilities-list clearfix machinery-specs">
+                    <!-- Характеристики будут добавлены через JavaScript -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</template>
+
 {% endblock %}
+
+{% block extra_js %}
+<!-- Дополнительные скрипты для фильтрации и слайдеров -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.10.0/js/lightgallery-all.min.js"></script>
+
+{% endblock %}
+
 

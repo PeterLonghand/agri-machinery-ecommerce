@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} | {{this_machinery.car_title}} {% endblock %}
+{% block title %}{{this_machinery.get_machinery_type_display}} {{this_machinery.manufacturer}} {{this_machinery.model_name}} ({{this_machinery.year}}) {% endblock %}
 {% block content %}
 
 {% load static %}
@@ -9,12 +9,12 @@
 <!-- Sub banner start -->
 <div class="sub-banner overview-bgi">
     <div class="container breadcrumb-area">
-        <div class="breadcrumb-areas">
+        <div class="breadcrumb-areas"><!-- 
             <h1>{{this_machinery.manufacturer}} {{this_machinery.model_name}} ({{this_machinery.year}})</h1>
             <ul class="breadcrumbs">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html">Главная</a></li>
                 <li class="active">{{this_machinery.car_title}}</li>
-            </ul>
+            </ul> -->
         </div>
     </div>
 </div>
@@ -30,10 +30,10 @@
                     <div class="heading-car clearfix">
                       {% include 'includes/messages.html' %}
                         <div class="pull-left">
-                            <h3>{{this_machinery.get_machinery_type_display}} {{this_machinery.manufacturer}} {{this_machinery.model_name}} ({{this_machinery.year}})</h3>
-                            <h6>
-                                <i class="flaticon-pin"></i>{{this_machinery.state}}, {{this_machinery.city}}
-                            </h6>
+                            <h3>{{this_machinery.get_machinery_type_display}} {{this_machinery.manufacturer}} {{this_machinery.model_name}}</h3>
+                            <h5>
+                                <!-- <i class="flaticon-calendar"> </i> -->{{ this_machinery.get_condition_display }}, {{this_machinery.year}} г.в.
+                            </h5>
                         </div>
                         <div class="pull-right">
                             <h3><span>{{this_machinery.price | intcomma}} ₽</span></h3>
@@ -43,26 +43,26 @@
                         <!-- main slider carousel items -->
                         <div class="carousel-inner">
                             <div class="active item carousel-item" data-slide-number="0">
-                                <img src="{{this_machinery.car_photo.url}}" class="img-fluid" alt="slider-car">
+                                <img src="{{this_machinery.photo.url}}" class="img-fluid" alt="slider-car">
                             </div>
-                            {% if this_machinery.car_photo_1 %}
+                            {% if this_machinery.photo_1 %}
                             <div class="item carousel-item" data-slide-number="1">
-                                <img src="{{this_machinery.car_photo_1.url}}" class="img-fluid" alt="slider-car">
+                                <img src="{{this_machinery.photo_1.url}}" class="img-fluid" alt="slider-car">
                             </div>
                             {% endif %}
-                            {% if this_machinery.car_photo_2 %}
+                            {% if this_machinery.photo_2 %}
                             <div class="item carousel-item" data-slide-number="2">
-                                <img src="{{this_machinery.car_photo_2.url}}" class="img-fluid" alt="slider-car">
+                                <img src="{{this_machinery.photo_2.url}}" class="img-fluid" alt="slider-car">
                             </div>
                             {% endif %}
-                            {% if this_machinery.car_photo_3 %}
+                            {% if this_machinery.photo_3 %}
                             <div class="item carousel-item" data-slide-number="4">
-                                <img src="{{this_machinery.car_photo_3.url}}" class="img-fluid" alt="slider-car">
+                                <img src="{{this_machinery.photo_3.url}}" class="img-fluid" alt="slider-car">
                             </div>
                             {% endif %}
-                            {% if this_machinery.car_photo_4 %}
+                            {% if this_machinery.photo_4 %}
                             <div class="item carousel-item" data-slide-number="5">
-                                <img src="{{this_machinery.car_photo_4.url}}" class="img-fluid" alt="slider-car">
+                                <img src="{{this_machinery.photo_4.url}}" class="img-fluid" alt="slider-car">
                             </div>
                             {% endif %}
                         </div>
@@ -71,34 +71,34 @@
                             <ul class="carousel-indicators car-properties list-inline nav nav-justified">
                                 <li class="list-inline-item active">
                                     <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#carDetailsSlider">
-                                        <img src="{{this_machinery.car_photo.url}}" class="img-fluid" alt="small-car">
+                                        <img src="{{this_machinery.photo.url}}" class="img-fluid" alt="small-car">
                                     </a>
                                 </li>
-                                {% if this_machinery.car_photo_1 %}
+                                {% if this_machinery.photo_1 %}
                                 <li class="list-inline-item">
                                     <a id="carousel-selector-1" data-slide-to="1" data-target="#carDetailsSlider">
-                                        <img src="{{this_machinery.car_photo_1.url}}" class="img-fluid" alt="small-car">
+                                        <img src="{{this_machinery.photo_1.url}}" class="img-fluid" alt="small-car">
                                     </a>
                                 </li>
                                 {% endif %}
-                                {% if this_machinery.car_photo_2 %}
+                                {% if this_machinery.photo_2 %}
                                 <li class="list-inline-item">
                                     <a id="carousel-selector-2" data-slide-to="2" data-target="#carDetailsSlider">
-                                        <img src="{{this_machinery.car_photo_2.url}}" class="img-fluid" alt="small-car">
+                                        <img src="{{this_machinery.photo_2.url}}" class="img-fluid" alt="small-car">
                                     </a>
                                 </li>
                                 {% endif %}
-                                {% if this_machinery.car_photo_3 %}
+                                {% if this_machinery.photo_3 %}
                                 <li class="list-inline-item">
                                     <a id="carousel-selector-3" data-slide-to="3" data-target="#carDetailsSlider">
-                                        <img src="{{this_machinery.car_photo_3.url}}" class="img-fluid" alt="small-car">
+                                        <img src="{{this_machinery.photo_3.url}}" class="img-fluid" alt="small-car">
                                     </a>
                                 </li>
                                 {% endif %}
-                                {% if this_machinery.car_photo_4 %}
+                                {% if this_machinery.photo_4 %}
                                 <li class="list-inline-item">
                                     <a id="carousel-selector-4" data-slide-to="4" data-target="#carDetailsSlider">
-                                        <img src="{{this_machinery.car_photo_4.url}}" class="img-fluid" alt="small-car">
+                                        <img src="{{this_machinery.photo_4.url}}" class="img-fluid" alt="small-car">
                                     </a>
                                 </li>
                                 {% endif %}
@@ -110,7 +110,7 @@
                     <div class="tabbing tabbing-box mb-40">
                         <ul class="nav nav-tabs" id="carTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active show" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="one" aria-selected="false">Vehicle overview</a>
+                                <a class="nav-link active show" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="one" aria-selected="false">Обзорная ифнормация</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="two" aria-selected="false">Features</a>
@@ -120,7 +120,7 @@
                             <div class="tab-pane fade active show" id="one" role="tabpanel" aria-labelledby="one-tab">
                                 <div class="car-description mb-50">
                                     <h3 class="heading-2">
-                                        Description
+                                        ОПИСАНИЕ:
                                     </h3>
                                     <p>
                                       {{this_machinery.description | safe }}
@@ -155,14 +155,12 @@
                 <div class="sidebar-right">
                     <!-- Advanced search start -->
                     <div class="widget advanced-search d-none-992">
-                        <button class="btn btn-danger bomd btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">Send a Message</button>
-
-
+                        <button class="btn btn-danger bomd btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">ОСТАВИТЬ ЗАЯВКУ</button>
                         <br>
                         <!-- начало: ХАРАКТЕРИСТИКИ -->
                         <h3 class="sidebar-title">Характеристики</h3>
                         <ul>
-                            {% if this_machinery.machinery_type == 'tractor' %}
+                            {% if this_machinery.machinery_type == 'Tractor' %}
                             <li>
                                 <span><b>Мощность:</b> </span>{{this_machinery.power}} л.с.
                             </li>
@@ -170,48 +168,21 @@
                                 <span><b>Объём двигателя:</b> </span>{{this_machinery.engine_volume}} л
                             </li>
                             <li>
-                                <span><b>Привод:</b> </span>{{this_machinery.drive_type}}
+                                <span><b>Привод:</b> </span>{{this_machinery.get_drive_type_display}}
                             </li>
                             <li>
-                                <span><b>Трансмиссия:</b> </span>{{this_machinery.transmission_type}}
+                                <span><b>Трансмиссия:</b> </span>{{this_machinery.get_transmission_type_display}}
                             </li>
-                            <li>
-                                <span><b>Тяговый класс:</b> </span>{{this_machinery.tow_class}}
-                            </li>
-                            <li>
-                                <span><b>...:</b> </span>{{this_machinery.engine}}
-                            </li>
-                            <li>
-                                <span><b>...:</b> </span>{{this_machinery.transmission}}
-                            </li>
-                            <li>
-                                <span><b>...:</b> </span>{{this_machinery.interior}}
-                            </li>
-                            <li>
-                                <span><b>...:</b> </span>{{this_machinery.miles | intcomma}} miles
-                            </li>
-                            <li>
-                                <span><b>...:</b> </span>{{this_machinery.doors}}
-                            </li>
-                            <li>
-                                <span><b>...:</b> </span>{{this_machinery.passengers}}
-                            </li>
-                            <li>
-                                <span><b>...:</b> </span>{{this_machinery.vin_no}}
-                            </li>
-                            <li>
-                                <span><b>...:</b> </span>{{this_machinery.milage}}
-                            </li>
-
-                            <li>
-                                <span><b>...:</b> </span>{{this_machinery.fuel_type}}
-                            </li>
-                            <li>
-                                <span><b>...:</b> </span>{{this_machinery.no_of_owners}}
+                            <li><span><b>Тяговый класс:</b> </span>
+                                {% if this_machinery.tow_class|floatformat:0 == this_machinery.tow_class|floatformat %}
+                                    {{ this_machinery.tow_class|floatformat:0 }}
+                                {% else %}
+                                    {{ this_machinery.tow_class|floatformat:-1 }}
+                                {% endif %}
                             </li>
                             {% elif this_machinery.machinery_type == 'Harvester' %}
                             <li>
-                                <span><b>Мощность:</b> </span>{{this_machinery.power}} л.с.
+                                <span><b>Мощность двигателя:</b> </span>{{this_machinery.power}} л.с.
                             </li>
                             <li>
                                 <span><b>Объём двигателя:</b> </span>{{this_machinery.engine_volume}} 
@@ -220,7 +191,7 @@
                                 <span><b>Объём бункера:</b> </span>{{this_machinery.bunker_volume}} л
                             </li>
                             <li> 
-                                <span><b>Тип молотильного аппарата:</b> </span>{{this_machinery.threshing_type}}
+                                <span><b>Тип молотильного аппарата:</b> </span>{{this_machinery.get_threshing_type_display}}
                             </li>
 
                             {% elif this_machinery.machinery_type == 'SelfPropelledSprayer' %}
@@ -231,7 +202,11 @@
                                 <span><b>Объём двигателя:</b> </span>{{this_machinery.engine_volume}} л
                             </li>
                             <li>
-                                <span><b>Ширина обработки:</b></span>{{this_machinery.width}} м
+                                <span><b>Ширина обработки:</b></span>{% if this_machinery.width|floatformat:0 == this_machinery.width|floatformat %}
+                                    {{ this_machinery.width|floatformat:0 }}
+                                {% else %}
+                                    {{ this_machinery.width|floatformat:-1 }}
+                                {% endif %} м
                             </li>
                             <li>
                                 <span><b> Объём бака для удобрений </b></span>{{this_machinery.tank_capacity}} л
@@ -244,14 +219,31 @@
                                 <span><b>Число корпусов:</b></span>{{this_machinery.bodies}}
                             </li>
                             <li>
-                                <span><b>Оборотный:</b></span>{{this_machinery.reversible}} 
+                                <span><b>Оборотный:</b></span>{{ this_machinery.reversible|yesno:"Да,Нет" }}
                             </li>
                             <li>
                                 <span><b>Вес:</b></span>{{this_machinery.weight}} кг
                             </li>
 
                             <li>
-                                <span><b>Минимальная мощность трактора:</b></span>{{this_machinery.min_power}} л.с.
+                                <span><b>Мин. мощность трактора:</b></span>{{this_machinery.min_power}} л.с.
+                            </li>
+                            {% elif this_machinery.machinery_type == 'Seeder'  %}
+                            <li> 
+                                <span><b>Рабочая ширина:</b></span>{{this_machinery.width}} м
+                            </li>
+                            <li>
+                                <span><b>Объём бункера семян:</b></span>{{this_machinery.seed_tank_capacity}} л
+                            </li>
+                            <li>
+                                <span><b>Объём бункера удобрений:</b></span>{{this_machinery.fert_tank_capacity}} л
+                            </li>
+                            {% elif this_machinery.machinery_type == 'Harrow'  %}
+                            <li> 
+                                <span><b>Рабочая ширина:</b></span>{{this_machinery.width}} м
+                            </li>
+                            <li>
+                                <span><b>Тип:</b></span>{{this_machinery.get_harrow_type_display}}
                             </li>
                             {% endif %}
                         </ul>                        
@@ -281,34 +273,32 @@
 
                               <input type="hidden" name="car_id" value="{{this_machinery.id}}">
                                 <div class="form-group">
-                                  <label for="name" class="col-form-label">Hello, My Name is</label>
+                                  <label for="name" class="col-form-label">Здравствуйте. Меня зовут</label>
                                   <div class="row">
                                     <div class="col">
-                                      <input type="text" name="first_name" class="form-control" placeholder="First Name"
+                                      <input type="text" name="first_name" class="form-control" placeholder="Имя"
                                       {% if user.is_authenticated %} value="{{user.first_name}}"  {% endif %} required>
                                     </div>
                                     <div class="col">
-                                      <input type="text" name="last_name" class="form-control" placeholder="Last Name"
+                                      <input type="text" name="last_name" class="form-control" placeholder="Фамилия"
                                        {% if user.is_authenticated %} value="{{user.last_name}}"  {% endif %} required>
                                     </div>
                                   </div>
                                 </div>
                                   <div class="form-group">
                                       <select class="form-control" id="sel1" name="customer_need">
-                                        <option value="I'm interested in this">I'm interested in this</option>
-                                        <option value="I'd like to know your best price for this">I'd like to know your best price for this</option>
-                                        <option value="I'd like to Schedule a Test Drive">I'd like to Schedule a Test Drive</option>
-                                        <option value="Check home delivery options">Check home delivery options</option>
-                                        <option value="I'd like a history report for this">I'd like a history report for this</option>
-                                        <option value="Discuss Financing">Discuss Financing</option>
-                                        <option value="Others [Mention Below]">Others [Mention Below]</option>
+                                        <option value="Приобретение">Покупка</option>
+                                        <option value="Лизинг">Лизинг</option>
+                                        <option value="Хочу запланировать осмотр/тест-драйв">Хочу запланировать осмотр/тест-драйв</option>
+                                        <option value="Другое">Другое (укажите  в комментарии)</option>
                                       </select>
                                     </div>
 									
                                 <div class="form-group">
-                                  <input type="text" name="car_title" class="form-control" value="{{ this_machinery.car_title }}" readonly>
+                                  <input type="text" name="car_title" class="form-control" value="{{this_machinery.get_machinery_type_display}} {{this_machinery.manufacturer}} {{this_machinery.model_name}} ({{this_machinery.year}})" readonly>
                                 </div>
-
+                                
+                                <!-- 
                                 <div class="form-group">
                                   <label for="name" class="col-form-label">I live in</label>
                                   <div class="row">
@@ -319,28 +309,28 @@
                                       <input type="text" name="state" class="form-control" placeholder="State" required>
                                     </div>
                                   </div>
-                                </div>
+                                </div>  -->
 
                                 <div class="form-group">
                                   <div class="row">
                                     <div class="col">
-                                        <label for="name" class="col-form-label">You can reach me by email at</label>
-                                      <input type="email" name="email" class="form-control" placeholder="Email Address"
+                                        <label for="name" class="col-form-label">Свяжитесь со мной по e-mail:</label>
+                                      <input type="email" name="email" class="form-control" placeholder="Адрес e-mail"
                                        {% if user.is_authenticated %} value="{{user.email}}"  {% endif %} required>
                                     </div>
                                     <div class="col">
-                                        <label for="phone" class="col-form-label">or by cell at</label>
-                                      <input type="text" name="phone" placeholder="Phone Number (optional)" class="form-control">
+                                        <label for="phone" class="col-form-label">или по телефону:</label>
+                                      <input type="text" name="phone" placeholder="Телефон (необязательно)" class="form-control">
                                     </div>
                                   </div>
                                 </div>
 
                                 <div class="form-group">
-                                  <label for="message" class="col-form-label">Additional Messages</label>
-                                  <textarea name="message" class="form-control" placeholder="Enter your message here (optional)"></textarea>
+                                  <label for="message" class="col-form-label">Комментарии:</label>
+                                  <textarea name="message" class="form-control" placeholder="Введите ваше сообщение (необязательно)"></textarea>
                                 </div>
                                 <hr>
-                                <input type="submit" value="Submit" class="btn btn-block btn-dark">
+                                <input type="submit" value="ОТПРАВИТЬ" style="color: #fff !important; background-color: #82b403;" class="btn btn-block btn-dark">
                             </form>
                           </div>
                         </div>
