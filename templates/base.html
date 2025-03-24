@@ -42,7 +42,7 @@
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" >
 
     <!-- Google fonts -->
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800%7CPlayfair+Display:400,700%7CRoboto:100,300,400,400i,500,700">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800%7CPlayfair+Display:400,700%7CRoboto:100,300,400,400i,500,700" as="style" onload="this.onload=null;this.rel='stylesheet'">
 
 
 
@@ -95,10 +95,14 @@
 <script  src="{% static 'js/jnoty.js' %}"></script>
 <script  src="{% static 'js/app.js' %}"></script>
 
-<script  src="{% static 'js/machinery-filter-implementation.js' %}"></script>
-    
 
 
+
+<script src="{% static 'js/carousel-fix.js' %}"></script>
+{% block extracss %}
+{% endblock %}
+{% block extrajs %}
+    {% endblock %}
 </body>
 
 </html>

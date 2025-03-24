@@ -15,4 +15,4 @@ class TeamAdmin(admin.ModelAdmin):
     search_fields = ('first_name', 'last_name', 'designation')
     list_filter = ('designation',)
 
-admin.site.register(Team, TeamAdmin)
+#admin.site.register(Team, TeamAdmin)

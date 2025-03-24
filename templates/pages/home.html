@@ -1,16 +1,21 @@
 {% extends 'base.html' %}
 
 {% block title %}Главная{% endblock %}
+{% load static %}
+
+{% block extrajs %}
+{% endblock %}
+
 {% block content %}
 
 {% load humanize %}
-{% load static %}
+
 <!-- Banner start -->
 <div class="banner" id="banner">
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner banner-slider-inner text-center">
             <div class="carousel-item banner-max-height active item-bg">
-                <img class="d-blockk ww-100 hh-100" src="{% static 'img/bg_kirovets_1.jpg' %}" alt="banner">
+                <img class="d-block w-100 h-100" src="{% static 'img/bg_kirovets_1.jpg' %}" alt="banner">
                 <div class="carousel-content container banner-info-2 bi-2 text-left">
                 
                     <h3>Кировец К-746М <br>Премиум</h3>
@@ -20,7 +25,7 @@
                 </div>
             </div>
             <div class="carousel-item banner-max-height item-bg">
-                <img class="d-blockk ww-100 hh-100" src="{% static 'img/bg_night.jpg' %}" alt="banner">
+                <img class="d-block w-100 h-100" src="{% static 'img/bg_night.jpg' %}" alt="banner">
                 <div class="carousel-content container banner-info-2 bi-2 text-left">
                     <h3>С НАМИ ВЕСНА<br>НАЧИНАЕТСЯ РАНЬШЕ</h3>
                     <h5>Первый в поле — первый в урожае.
@@ -40,13 +45,13 @@
         </div>
         <!-- Search box 3 start -->
         <div class="search-box-4 sb-8">
-            <form action="{% url 'search' %}" method="">
-                <div class="form-group">
+            <form action="{% url 'cars' %}" method="get">
+                <!-- <div class="form-group">
                     <input type="text" name="keyword" placeholder="Search by Car Name" class="form-control">
-                </div>
+                </div> -->
 
                 <div class="form-group">
-                    <select class="form-control search-fields" name="body_style">
+                    <select class="form-control search-fields" name="machinery_type">
                         <option selected="true" disabled="disabled">Тип техники</option>
                         {% for type in types_search %}
                           <option value="{{type}}">{{type}}</option>
@@ -55,7 +60,7 @@
                 </div>
 
                 <div class="form-group">
-                    <select class="form-control search-fields" name="model">
+                    <select class="form-control search-fields" name="manufacturer">
                         <option selected="true" disabled="disabled">Производитель</option>
                         {% for brand in brand_search %}
                           <option value="{{brand}}">{{brand}}</option>
@@ -80,10 +85,10 @@
                     </select>
                 </div>
                 <div class="range-slider clearfix">
-                                <label>Цена</label>
-                                <div data-min="0" data-max="{{max_price}}"  data-min-name="min_price" data-max-name="max_price" data-unit="руб" class="range-slider-ui ui-slider" aria-disabled="false"></div>
-                                <div class="clearfix"></div>
-                            </div>
+                    <label>Цена</label>
+                    <div data-min="0" data-max="{{max_price}}" data-min-name="min_price" data-max-name="max_price" data-unit="руб" class="range-slider-ui ui-slider" aria-disabled="false"></div>
+                    <div class="clearfix"></div>
+                </div>
                 <div class="form-group">
                     <button class="btn btn-block button-theme btn-md">
                         <i class="fa fa-filter"></i> Найти
@@ -109,7 +114,7 @@
 
 <!-- Search box 2 end -->
 
-<!-- Featured car start -->
+
 <div class="featured-car content-area-5">
     <div class="container">
         <!-- Main title -->
@@ -176,19 +181,65 @@
                             </div>
                             <ul class="facilities-list clearfix">
                                 
-                                {% if machine.width %}
-                                <li>Рабочая ширина: {{machine.width | intcomma}} м</li>
-                                {%  endif %}
-                                {% if machine.power %} 
-                                <li>Двигатель: {{machine.engine_volume}}л   {{machine.power}} л.с. </li>
-                                {% endif %}
                                 
-                                {% if machine.machinery_type == 'SelfPropelledSprayer' %}
+                                {%if machine.machinery_type == 'Tractor'%}                                
+                                <li>Привод: {{machine.get_drive_type_display}}</li>
+                                <li>Двигатель: {{machine.power}} л.с. / {{machine.engine_volume}} л</li>
+                                <li>КПП: {{machine.get_transmission_type_display}}</li>
+                                <li>Тяговый класс: {{machine.tow_class}}</li>
+                                
+                                {% elif machine.machinery_type == 'Harvester' %}
+                                <li>Тип обмолота: {{machine.get_threshing_type_display}}</li>
+                                <li>Двигатель: {{machine.power}} л.с. / {{machine.engine_volume}} л</li>
+                                <li>Объем бункера: {{machine.bunker_volume}} л</li>
+                                
+                                {% elif machine.machinery_type == 'SelfPropelledSprayer' %}
+                                <li>Двигатель: {{machine.power}} л.с. / {{machine.engine_volume}} л</li>
+                                <li>Ширина: {% if machine.maxwidth == machine.minwidth %} {{machine.minwidth}} м {% else %}
+                                    {{machine.minwidth}} - {{machine.maxwidth}} м {% endif %}
+                                </li>
                                 <li>Объём бака: {{machine.tank_capacity}} л</li>
+                                <li>Производительность: до {{machine.pump_productivity}} л/мин</li>
+                                
                                 {% elif machine.machinery_type == 'Plow' %}
+                                <li>Ширина: {{machine.width}} м</li>
                                 <li>{{machine.bodies}}-корпусной</li>
                                 <li>Оборотный: {% if machine.reversible %}да{% else %}нет{% endif %}</li>
+                                <li>Вес: {{machine.weight}} кг</li>
                                 <li>Мин. мощность трактора: {{machine.min_power}} л.с.</li>
+                                
+                                {% elif machine.machinery_type == 'Seeder' %}
+                                <li>Тип: {{machine.get_seed_type_display}}</li>
+                                <li>Ширина: {{machine.width}} м</li>
+                                <li>Объем бункера семян: {{machine.seed_tank_capacity}} л</li>
+                                <li>Объем бункера удобрений: {{machine.fert_tank_capacity}} л</li>
+
+                                {% elif machine.machinery_type == 'Harrow' %}
+                                <li>Тип: {{machine.get_harrow_type_display}}</li>
+                                <li>Ширина: {{machine.width}} м</li>
+                                <li>Глубина обработки: от {{machine.min_depth}} до {{machine.max_depth}} см</li>
+                                <li>Производительность: до {{machine.productivity}} га/час</li>
+
+                                {% elif machine.machinery_type == 'TrailedSprayer' %}
+                                <li>Ширина: {% if machine.maxwidth == machine.minwidth %} {{machine.minwidth}} м {% else %}
+                                    {{machine.minwidth}} - {{machine.maxwidth}} м {% endif %}
+                                </li>
+                                <li>Производительность: до {{machine.pump_productivity}} л/мин</li>
+                                <li>Объем бака: {{machine.tank_capacity}} л</li>
+                                
+                                {% elif machine.machinery_type == 'Mower' %}
+                                <li>Тип: {{machine.get_mower_type_display}}</li>
+                                <li>Ширина: {{machine.width}} м</li>
+                                <li>Производительность: до {{machine.productivity}} га/ч</li>
+                                <li>Мин. мощность трактора: {{machine.min_power}} л.с.</li>
+
+                                {% elif machine.machinery_type == 'Baler' %}
+                                <li>Тип: {{machine.get_baler_type_display}}</li>
+                                <li>Размер тюка: {{machine.bale_size}} см</li>
+                                <li>Ширина захвата: {{machine.width}} м</li>
+                                <li>До {{machine.productivity}} тюк/ч</li>
+                                <li>Мин. мощность трактора: {{machine.min_power}} л.с.</li>
+
                                 {% endif %}
                                 
                             </ul>
@@ -211,10 +262,8 @@
 </div>
 <!-- Featured car end -->
 
-<!-- Rent car start -->
-<div class="featured-car content-area">
+<!-- <div class="featured-car content-area">
     <div class="container">
-        <!-- Main title -->
         <div class="main-title">
             <h1>Последние <span>поступления</span></h1>
             <p></p>
@@ -303,7 +352,7 @@
         </div>
     </div>
 </div>
-<!-- Rent car end -->
+ -->
 
 
 <!-- Our team start -->

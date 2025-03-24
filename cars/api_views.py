@@ -111,7 +111,7 @@ def get_filter_options(request):
         'max': max(filter(None, [tractor_range['max_power'], harvester_range['max_power'], sprayer_range['max_power']]))
     }
     
-    # Get engine volume range
+    
     # Получаем диапазон объема двигателя из каждой модели
     tractor_volume = Tractor.objects.aggregate(min_volume=Min('engine_volume'), max_volume=Max('engine_volume'))
     harvester_volume = Harvester.objects.aggregate(min_volume=Min('engine_volume'), max_volume=Max('engine_volume'))
@@ -131,13 +131,40 @@ def get_filter_options(request):
     width_range = Machinery.objects.aggregate(
         min=Min(Coalesce(
             'plow__width', 'seeder__width', 'harrow__width',
-            'trailedsprayer__width', 'mower__width', 'selfpropelledsprayer__width', 'baler__width'
+             'mower__width',  'baler__width'
         )),
         max=Max(Coalesce(
             'plow__width', 'seeder__width', 'harrow__width',
-            'trailedsprayer__width', 'mower__width', 'selfpropelledsprayer__width', 'baler__width'
+             'mower__width', 'baler__width'
         ))
     )
+
+    sprayer_minwidth_range=Machinery.objects.aggregate(min=Min(Coalesce('selfpropelledsprayer__minwidth','trailedsprayer__minwidth')),
+                                                    max=Max(Coalesce('selfpropelledsprayer__minwidth','trailedsprayer__minwidth')))
+                              
+    sprayer_maxwidth_range=Machinery.objects.aggregate(min=Min(Coalesce('selfpropelledsprayer__maxwidth','trailedsprayer__maxwidth')),
+                                                    max=Max(Coalesce('selfpropelledsprayer__maxwidth','trailedsprayer__maxwidth')))
+    sprayer_tank_range=Machinery.objects.aggregate(min=Min(Coalesce('selfpropelledsprayer__tank_capacity','trailedsprayer__tank_capacity')),
+                                                    max=Max(Coalesce('selfpropelledsprayer__tank_capacity','trailedsprayer__tank_capacity')))
+    sprayer_pump_productivity_range = Machinery.objects.aggregate(min=Min(Coalesce('selfpropelledsprayer__pump_productivity','trailedsprayer__pump_productivity')),
+                                                    max=Max(Coalesce('selfpropelledsprayer__pump_productivity','trailedsprayer__pump_productivity')))
+    seeder_seed_tank_capacity_range = Machinery.objects.aggregate(min=Min('seeder__seed_tank_capacity'), max=Max('seeder__seed_tank_capacity'))                 
+    seeder_fert_tank_capacity_range = Machinery.objects.aggregate(min=Min('seeder__fert_tank_capacity'), max=Max('seeder__fert_tank_capacity'))
+    seeder_width_range = Machinery.objects.aggregate(min=Min('seeder__width'), max=Max('seeder__width'))
+    bale_size_range = Machinery.objects.aggregate(min=Min('baler__bale_size'), max=Max('baler__bale_size'))
+    baler_width_range = Machinery.objects.aggregate(min=Min('baler__width'), max=Max('baler__width'))
+    baler_productivity_range = Machinery.objects.aggregate(min=Min('baler__productivity'), max=Max('baler__productivity'))
+    baler_min_power_range = Machinery.objects.aggregate(min=Min('baler__min_power'), max=Max('baler__min_power'))
+    
+    harrow_min_depth_range = Machinery.objects.aggregate(min=Min('harrow__min_depth'), max=Max('harrow__min_depth'))
+    harrow_max_depth_range = Machinery.objects.aggregate(min=Min('harrow__max_depth'), max=Max('harrow__max_depth'))
+    harrow_width_range = Machinery.objects.aggregate(min=Min('harrow__width'), max=Max('harrow__width'))
+    harrow_productivity_range = Machinery.objects.aggregate(min=Min('harrow__productivity'), max=Max('harrow__productivity'))
+
+
+    mower_min_power_range = Machinery.objects.aggregate(min=Min('mower__min_power'), max=Max('mower__min_power'))
+    plow_min_power_range = Machinery.objects.aggregate(min=Min('plow__min_power'), max=Max('plow__min_power'))
+    mower_productivity_range = Machinery.objects.aggregate(min=Min('mower__productivity'), max=Max('mower__productivity'))
     
     # Prepare tractor-specific options
     tractor_options = {
@@ -160,11 +187,14 @@ def get_filter_options(request):
     harrow_options = {
         'harrow_types': [choice[0] for choice in Harrow.HARROW_TYPE_CHOICES],
     }
+
+    mower_options = {
+        'mower_types': [choice[0] for choice in Mower.MOWER_TYPE_CHOICES],
+    }
     
     # Prepare baler-specific options
     baler_options = {
         'baler_types': [choice[0] for choice in Baler.BALER_TYPE_CHOICES],
-        'bale_sizes': [choice[0] for choice in Baler.BALE_SIZE_CHOICES],
     }
     
     # Count of each machinery type
@@ -187,10 +217,29 @@ def get_filter_options(request):
         'power_range': power_range,
         'engine_volume_range': engine_volume_range,
         'width_range': width_range,
+        'sprayer_minwidth_range': sprayer_minwidth_range,
+        'sprayer_maxwidth_range': sprayer_maxwidth_range,
+        'sprayer_pump_productivity_range': sprayer_pump_productivity_range,
+        'sprayer_tank_range': sprayer_tank_range,
+        'seeder_seed_tank_capacity_range': seeder_seed_tank_capacity_range,
+        'seeder_fert_tank_capacity_range': seeder_fert_tank_capacity_range,
+        'seeder_width_range': seeder_width_range,
+        'bale_size_range': bale_size_range,
+        'baler_width_range': baler_width_range,
+        'baler_productivity_range': baler_productivity_range,
+        'baler_min_power_range': baler_min_power_range,
+        'mower_productivity_range': mower_productivity_range,
+        'mower_min_power_range': mower_min_power_range,
+        'plow_min_power_range': plow_min_power_range,
+        'harrow_min_depth_range': harrow_min_depth_range,
+        'harrow_max_depth_range': harrow_max_depth_range,
+        'harrow_width_range': harrow_width_range,
+        'harrow_productivity_range': harrow_productivity_range,
         'tractor_options': tractor_options,
         'harvester_options': harvester_options,
         'seeder_options': seeder_options,
         'harrow_options': harrow_options,
+        'mower_options': mower_options,
         'baler_options': baler_options,
         'machinery_counts': machinery_counts,
     })
@@ -303,10 +352,14 @@ def combined_machinery_list(request):
             power_max = request.query_params.get('self_sprayer_power_max')
             engine_volume_min = request.query_params.get('self_sprayer_engine_volume_min')
             engine_volume_max = request.query_params.get('self_sprayer_engine_volume_max')
-            width_min = request.query_params.get('self_sprayer_width_min')
-            width_max = request.query_params.get('self_sprayer_width_max')
+            minwidth_min = request.query_params.get('self_sprayer_minwidth_min')
+            minwidth_max = request.query_params.get('self_sprayer_minwidth_max')
+            maxwidth_min = request.query_params.get('self_sprayer_maxwidth_min')
+            maxwidth_max = request.query_params.get('self_sprayer_maxwidth_max')
             tank_min = request.query_params.get('self_sprayer_tank_min')
             tank_max = request.query_params.get('self_sprayer_tank_max')
+            pump_prodictivity_min = request.query_params.get('self_sprayer_pump_prodictivity_min')
+            pump_prodictivity_max = request.query_params.get('self_sprayer_pump_prodictivity_max')
 
 
             
@@ -318,13 +371,21 @@ def combined_machinery_list(request):
                 include_item = False
             if engine_volume_max and item.engine_volume > float(engine_volume_max):
                 include_item = False
-            if width_min and item.width < float(width_min):
+            if minwidth_min and item.minwidth < float(minwidth_min):
                 include_item = False
-            if width_max and item.width > float(width_max):
+            if minwidth_max and item.minwidth > float(minwidth_max):
+                include_item = False
+            if maxwidth_min and item.maxwidth < float(maxwidth_min):
+                include_item = False
+            if maxwidth_max and item.maxwidth > float(maxwidth_max):
                 include_item = False
             if tank_min and item.tank_capacity < float(tank_min):
                 include_item = False
             if tank_max and item.tank_capacity > float(tank_max):
+                include_item = False
+            if pump_prodictivity_min and item.pump_productivity < float(pump_prodictivity_min):
+                include_item = False
+            if pump_prodictivity_max and item.pump_productivity > float(pump_prodictivity_max): 
                 include_item = False
         
         # Фильтры для Плугов
@@ -386,6 +447,12 @@ def combined_machinery_list(request):
         elif isinstance(item, Harrow):
             width_min = request.query_params.get('harrow_width_min')
             width_max = request.query_params.get('harrow_width_max')
+            min_depth_min = request.query_params.get('harrow_min_depth_min')
+            min_depth_max = request.query_params.get('harrow_min_depth_max')
+            max_depth_min = request.query_params.get('harrow_max_depth_min')
+            max_depth_max = request.query_params.get('harrow_max_depth_max')
+            productivity_min = request.query_params.get('harrow_productivity_min')
+            productivity_max = request.query_params.get('harrow_productivity_max')
 
             harrow_type = request.query_params.get('harrow_type')
             if harrow_type:
@@ -397,32 +464,75 @@ def combined_machinery_list(request):
                 include_item = False
             if width_max and item.width > float(width_max):
                 include_item = False
+            if min_depth_min and item.min_depth < float(min_depth_min):
+                include_item = False
+            if min_depth_max and item.min_depth > float(min_depth_max):
+                include_item = False
+            if max_depth_min and item.max_depth < float(max_depth_min):
+                include_item = False            
+            if max_depth_max and item.max_depth > float(max_depth_max):
+                include_item = False
+            if productivity_min and item.productivity < float(productivity_min):
+                include_item = False
+            if productivity_max and item.productivity > float(productivity_max):
+                include_item = False
+
         
         # Фильтры для Прицепных опрыскивателей
         elif isinstance(item, TrailedSprayer):
-            width_min = request.query_params.get('trailed_sprayer_width_min')
-            width_max = request.query_params.get('trailed_sprayer_width_max')
+            minwidth_min = request.query_params.get('trailed_sprayer_minwidth_min')
+            minwidth_max = request.query_params.get('trailed_sprayer_minwidth_max')
+            maxwidth_min = request.query_params.get('trailed_sprayer_maxwidth_min')
+            maxwidth_max = request.query_params.get('trailed_sprayer_maxwidth_max')
             tank_min = request.query_params.get('trailed_sprayer_tank_min')
             tank_max = request.query_params.get('trailed_sprayer_tank_max')
+            pump_prodictivity_min = request.query_params.get('trailed_sprayer_pump_prodictivity_min')
+            pump_prodictivity_max = request.query_params.get('trailed_sprayer_pump_prodictivity_max')
             
-            if width_min and item.width < float(width_min):
+            if minwidth_min and item.minwidth < float(minwidth_min):
                 include_item = False
-            if width_max and item.width > float(width_max):
+            if minwidth_max and item.minwidth > float(minwidth_max):
+                include_item = False
+            if maxwidth_min and item.maxwidth < float(maxwidth_min):
+                include_item = False
+            if maxwidth_max and item.maxwidth > float(maxwidth_max):
                 include_item = False
             if tank_min and item.tank_capacity < int(tank_min):
                 include_item = False
             if tank_max and item.tank_capacity > int(tank_max):
+                include_item = False
+            if pump_prodictivity_min and item.pump_prodictivity < int(pump_prodictivity_min):
+                include_item = False
+            if pump_prodictivity_max and item.pump_prodictivity > int(pump_prodictivity_max):
                 include_item = False
         
         # Фильтры для Косилок
         elif isinstance(item, Mower):
             width_min = request.query_params.get('mower_width_min')
             width_max = request.query_params.get('mower_width_max')
+            productivity_min = request.query_params.get('mower_productivity_min')
+            productivity_max = request.query_params.get('mower_productivity_max')
+            min_power_min = request.query_params.get('mower_min_power_min')
+            min_power_max = request.query_params.get('mower_min_power_max')
             
             if width_min and item.width < float(width_min):
                 include_item = False
             if width_max and item.width > float(width_max):
                 include_item = False
+            if productivity_min and item.productivity < float(productivity_min):
+                include_item = False
+            if productivity_max and item.productivity > float(productivity_max):
+                include_item = False
+            if min_power_min and item.min_power < float(min_power_min):
+                include_item = False
+            if min_power_max and item.min_power > float(min_power_max):
+                include_item = False
+            
+            mower_type = request.query_params.get('mower_type')
+            if mower_type:
+                mower_types = [mt.strip() for mt in mower_type.split(',')]
+                if item.mower_type not in mower_types:
+                    include_item = False
         
         # Фильтры для Пресс-подборщиков
         elif isinstance(item, Baler):

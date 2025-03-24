@@ -83,15 +83,19 @@ class SelfPropelledSprayerFilter(MachineryFilter):
     power_max = django_filters.NumberFilter(field_name='power', lookup_expr='lte')
     engine_volume_min = django_filters.NumberFilter(field_name='engine_volume', lookup_expr='gte')
     engine_volume_max = django_filters.NumberFilter(field_name='engine_volume', lookup_expr='lte')
-    width_min = django_filters.NumberFilter(field_name='width', lookup_expr='gte')
-    width_max = django_filters.NumberFilter(field_name='width', lookup_expr='lte')
+    minwidth_min = django_filters.NumberFilter(field_name='minwidth', lookup_expr='gte')
+    minwidth_max = django_filters.NumberFilter(field_name='minwidth', lookup_expr='lte')
+    maxwidth_min = django_filters.NumberFilter(field_name='maxwidth', lookup_expr='gte')
+    maxwidth_max = django_filters.NumberFilter(field_name='maxwidth', lookup_expr='lte')
+    pump_productivity_min = django_filters.NumberFilter(field_name='pump_productivity', lookup_expr='gte')
+    pump_productivity_max = django_filters.NumberFilter(field_name='pump_productivity', lookup_expr='lte')
     tank_capacity_min = django_filters.NumberFilter(field_name='tank_capacity', lookup_expr='gte')
     tank_capacity_max = django_filters.NumberFilter(field_name='tank_capacity', lookup_expr='lte')
     
     class Meta(MachineryFilter.Meta):
         model = SelfPropelledSprayer
         fields = MachineryFilter.Meta.fields + [
-            'power', 'engine_volume', 'width', 'tank_capacity'
+            'power', 'engine_volume', 'maxwidth', 'minwidth', 'tank_capacity', 'pump_productivity'
         ]
 
 class PlowFilter(MachineryFilter):
@@ -132,6 +136,12 @@ class HarrowFilter(MachineryFilter):
     width_max = django_filters.NumberFilter(field_name='width', lookup_expr='lte')
     harrow_type = django_filters.CharFilter(lookup_expr='iexact')
     harrow_type_in = django_filters.CharFilter(method='filter_harrow_type_in')
+    min_depth_min = django_filters.NumberFilter(field_name='min_depth', lookup_expr='gte')
+    min_depth_max = django_filters.NumberFilter(field_name='min_depth', lookup_expr='lte')
+    max_depth_min = django_filters.NumberFilter(field_name='max_depth', lookup_expr='gte')
+    max_depth_max = django_filters.NumberFilter(field_name='max_depth', lookup_expr='lte')
+    productivity_min = django_filters.NumberFilter(field_name='productivity', lookup_expr='gte')
+    productivity_max = django_filters.NumberFilter(field_name='productivity', lookup_expr='lte')
     
     def filter_harrow_type_in(self, queryset, name, value):
         harrow_types = value.split(',')
@@ -140,36 +150,47 @@ class HarrowFilter(MachineryFilter):
     class Meta(MachineryFilter.Meta):
         model = Harrow
         fields = MachineryFilter.Meta.fields + [
-            'width', 'harrow_type'
+            'width', 'harrow_type', 'productivity', 'min_depth', 'max_depth'
         ]
 
 class TrailedSprayerFilter(MachineryFilter):
-    width_min = django_filters.NumberFilter(field_name='width', lookup_expr='gte')
-    width_max = django_filters.NumberFilter(field_name='width', lookup_expr='lte')
+    minwidth_min = django_filters.NumberFilter(field_name='minwidth', lookup_expr='gte')
+    minwidth_max = django_filters.NumberFilter(field_name='minwidth', lookup_expr='lte')
+    maxwidth_min = django_filters.NumberFilter(field_name='maxwidth', lookup_expr='gte')
+    maxwidth_max = django_filters.NumberFilter(field_name='maxwidth', lookup_expr='lte')
+    pump_productivity_min = django_filters.NumberFilter(field_name='pump_productivity', lookup_expr='gte')
+    pump_productivity_max = django_filters.NumberFilter(field_name='pump_productivity', lookup_expr='lte')
     tank_capacity_min = django_filters.NumberFilter(field_name='tank_capacity', lookup_expr='gte')
     tank_capacity_max = django_filters.NumberFilter(field_name='tank_capacity', lookup_expr='lte')
     
     class Meta(MachineryFilter.Meta):
         model = TrailedSprayer
         fields = MachineryFilter.Meta.fields + [
-            'width', 'tank_capacity'
+            'minwidth', 'maxwidth', 'tank_capacity', 'pump_productivity'
         ]
 
 class MowerFilter(MachineryFilter):
+    mower_type = django_filters.CharFilter(lookup_expr='iexact')
+    mower_type_in = django_filters.CharFilter(method='filter_mower_type_in')
     width_min = django_filters.NumberFilter(field_name='width', lookup_expr='gte')
     width_max = django_filters.NumberFilter(field_name='width', lookup_expr='lte')
+    productivity_min = django_filters.NumberFilter(field_name='productivity', lookup_expr='gte')
+    productivity_max = django_filters.NumberFilter(field_name='productivity', lookup_expr='lte')
+    min_power_min = django_filters.NumberFilter(field_name='min_power', lookup_expr='gte')
+    min_power_max = django_filters.NumberFilter(field_name='min_power', lookup_expr='lte')
     
     class Meta(MachineryFilter.Meta):
         model = Mower
         fields = MachineryFilter.Meta.fields + [
-            'width'
+            'mower_type', 'rotation_speed', 'productivity', 'min_power', 'width'
         ]
+        
 
 class BalerFilter(MachineryFilter):
     baler_type = django_filters.CharFilter(lookup_expr='iexact')
     baler_type_in = django_filters.CharFilter(method='filter_baler_type_in')
-    bale_size = django_filters.CharFilter(lookup_expr='iexact')
-    bale_size_in = django_filters.CharFilter(method='filter_bale_size_in')
+    bale_size_min = django_filters.NumberFilter(lookup_expr='gte')
+    bale_size_max = django_filters.NumberFilter(lookup_expr='lte')
     productivity_min = django_filters.NumberFilter(field_name='productivity', lookup_expr='gte')
     productivity_max = django_filters.NumberFilter(field_name='productivity', lookup_expr='lte')
     min_power_min = django_filters.NumberFilter(field_name='min_power', lookup_expr='gte')
@@ -180,10 +201,6 @@ class BalerFilter(MachineryFilter):
     def filter_baler_type_in(self, queryset, name, value):
         baler_types = value.split(',')
         return queryset.filter(baler_type__in=baler_types)
-    
-    def filter_bale_size_in(self, queryset, name, value):
-        bale_sizes = value.split(',')
-        return queryset.filter(bale_size__in=bale_sizes)
     
     class Meta(MachineryFilter.Meta):
         model = Baler

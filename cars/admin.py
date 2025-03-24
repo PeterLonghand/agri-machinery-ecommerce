@@ -1,9 +1,7 @@
 from django.contrib import admin
-from .models import Machineryy
 from django.utils.html import format_html
 
 # Register your models here.
-
 
 from .models import Machinery, Tractor, Harvester, SelfPropelledSprayer, Plow, Seeder, Harrow, TrailedSprayer, Mower, Baler
 
@@ -66,8 +64,8 @@ class SelfPropelledSprayerAdmin(admin.ModelAdmin):
     
     thumbnail.short_description = "Фото"
     
-    list_display = ('id','thumbnail','manufacturer', 'model_name', 'year', 'price', 'power', 'width', 'tank_capacity')
-    search_fields = ('id', 'power')
+    list_display = ('id','thumbnail','manufacturer', 'model_name', 'year', 'price', 'power', 'minwidth', 'maxwidth', 'tank_capacity')
+    search_fields = ('id', 'power', 'minwidth', 'maxwidth')
 
 @admin.register(Plow)
 class PlowAdmin(admin.ModelAdmin):
@@ -113,8 +111,8 @@ class TrailedSprayerAdmin(admin.ModelAdmin):
         return "-"
     
     thumbnail.short_description = "Фото"
-    list_display = ('id', 'thumbnail','manufacturer', 'model_name', 'year', 'price', 'width', 'tank_capacity')
-    search_fields = ('id', 'working_width')
+    list_display = ('id', 'thumbnail','manufacturer', 'model_name', 'year', 'price', 'minwidth', 'maxwidth', 'tank_capacity')
+    search_fields = ('id', 'minwidth', 'maxwidth')
 
 @admin.register(Mower)
 class MowerAdmin(admin.ModelAdmin):
@@ -135,7 +133,7 @@ class BalerAdmin(admin.ModelAdmin):
         return "-"
     
     thumbnail.short_description = "Фото"
-    list_display = ('id', 'thumbnail','manufacturer', 'model_name','year', 'price', 'baler_type', 'bale_size','width')
-    list_filter = ('baler_type', 'bale_size', 'year')
-    search_fields = ('id', 'bale_size')
+    list_display = ('id', 'thumbnail','manufacturer', 'model_name','year', 'price', 'baler_type','bale_size','width')
+    list_filter = ('baler_type',  'year')
+    search_fields = ('id', 'bale_size' 'manufacturer')
 

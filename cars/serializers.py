@@ -44,7 +44,7 @@ class SelfPropelledSprayerSerializer(MachinerySerializer):
     class Meta(MachinerySerializer.Meta):
         model = SelfPropelledSprayer
         fields = MachinerySerializer.Meta.fields + [
-            'power', 'engine_volume', 'width', 'tank_capacity'
+            'power', 'engine_volume', 'minwidth', 'maxwidth', 'pump_productivity', 'tank_capacity'
         ]
 
 class PlowSerializer(MachinerySerializer):
@@ -69,30 +69,29 @@ class HarrowSerializer(MachinerySerializer):
     class Meta(MachinerySerializer.Meta):
         model = Harrow
         fields = MachinerySerializer.Meta.fields + [
-            'width', 'harrow_type', 'harrow_type_display'
+            'width', 'harrow_type', 'harrow_type_display','productivity', 'min_depth', 'max_depth'
         ]
 
 class TrailedSprayerSerializer(MachinerySerializer):
     class Meta(MachinerySerializer.Meta):
         model = TrailedSprayer
         fields = MachinerySerializer.Meta.fields + [
-            'width', 'tank_capacity'
+             'tank_capacity', 'minwidth', 'maxwidth', 'pump_productivity'
         ]
 
 class MowerSerializer(MachinerySerializer):
+    mower_type_display = serializers.CharField(source='get_mower_type_display')
     class Meta(MachinerySerializer.Meta):
         model = Mower
         fields = MachinerySerializer.Meta.fields + [
-            'width'
+            'mower_type', 'mower_type_display', 'rotation_speed', 'productivity', 'min_power', 'width'
         ]
 
 class BalerSerializer(MachinerySerializer):
     baler_type_display = serializers.CharField(source='get_baler_type_display')
-    bale_size_display = serializers.CharField(source='get_bale_size_display')
     
     class Meta(MachinerySerializer.Meta):
         model = Baler
         fields = MachinerySerializer.Meta.fields + [
-            'baler_type', 'baler_type_display', 'bale_size',
-            'bale_size_display', 'productivity', 'min_power', 'width'
+            'baler_type', 'baler_type_display', 'bale_size', 'productivity', 'min_power', 'width'
         ]

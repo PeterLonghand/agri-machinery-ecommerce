@@ -1,62 +1,126 @@
 {% extends 'base.html' %}
 
-{% block title %} | Dashboard {% endblock %}
+{% block title %}Мои заявки{% endblock %}
 {% block content %}
 
-<!-- Sub banner start -->
-<!-- Log on to codeastro.com for more projects -->
 <div class="sub-banner overview-bgi">
     <div class="container breadcrumb-area">
         <div class="breadcrumb-areas">
-            <h1>Dashboard</h1>
+            <h1>Мои заявки</h1>
             <ul class="breadcrumbs">
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li class="active">{{user.first_name}}</li>
+                <li><a href="{% url 'home' %}">Главная</a></li>
+                <li class="active">Заявки</li>
             </ul>
         </div>
     </div>
 </div>
-<!-- Sub Banner end -->
-<!-- Log on to codeastro.com for more projects -->
 
 <!--   Dashboard Start   -->
 
 <div class="container mt-50 mb-50">
   {% include 'includes/messages.html' %}
-	<div class="main-title" style="text-align:left !important;">
-            <h1>Welcome <span>{{user.first_name}} {{user.last_name}},</span></h1>
-            <p>Here are the list of the cars that you have inquired about:</p>
-        </div>
-        {% if inquiries %}
-            <table class="table table-hover table-bordered table-striped">
-              <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Car Name</th>
-                <th scope="col">Location</th>
-                <th scope="col">Action</th>
-              </tr>
-              </thead>
-              <tbody>
-
-              {% for inquiry in inquiries %}
-                <tr>
-                  <!-- <th scope="row">{{ forloop.counter }}</th> -->
-                  <th scope="row">1</th>
-                  <td>{{inquiry.car_title}}</td>
-                  <td>{{inquiry.city}}</td>
-                  <td><a href="{% url 'car_detail' inquiry.car_id %}" class="btn btn-dark">View Car</a></td>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table><!-- Log on to codeastro.com for more projects -->
-        {% else %}
-        <div class="alert alert-primary" role="alert">
-          <h4>You have no inquiries!!</h4>
-        </div>
-          
-        {% endif %}
-
+  <div class="main-title" style="text-align:left !important;">
+        <h1>Здравствуйте, <span>{{user.first_name}} {{user.last_name}}!</span></h1>
+        <p>Здесь отображается информация о Ваших заявках</p>
+  </div>
+  {% if inquiries %}
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Наименование техники</th>
+            <th scope="col">Дата заявки</th>
+            <th scope="col">Тип заявки</th>
+            <th scope="col">Сумма</th>
+            <th scope="col">Комментарий</th>
+            <th scope="col">Статус</th>
+            <th scope="col">Ответ</th>
+            <th scope="col" colspan="2">Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inquiry in inquiries %}
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ inquiry.car_title }}</td>
+              <td>{{ inquiry.create_date|date:"d.m.Y" }}</td>
+              <td>{{ inquiry.customer_need }}</td>
+              {% if inquiry.customer_need == "Лизинг" %}
+              <td>{{inquiry.leasing_full_payment}}</td>
+              {% elif inquiry.customer_need == "Приобретение" %}
+              <td>{{inquiry.get_machine_price}}</td>
+              {% else %}
+              <td>–</td>
+              {% endif %}
+              <td>
+                {% if inquiry.message %}
+                  {{ inquiry.message|truncatechars:50 }}
+                {% else %}
+                  <span class="text-muted">Нет комментария</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if inquiry.status == 'processing' %}
+                  <span class="badge badge-primary">В обработке</span>
+                {% elif inquiry.status == 'approved' %}
+                  <span class="badge badge-success">Одобрена</span>
+                {% elif inquiry.status == 'rejected' %}
+                  <span class="badge badge-danger">Отклонена</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if inquiry.staff_response%}
+                  <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#responseModal{{ inquiry.id }}">
+                    Просмотреть
+                  </button>
+                  
+                  <!-- Модальное окно для ответа -->
+                  <div class="modal fade" id="responseModal{{ inquiry.id }}" tabindex="-1" role="dialog" aria-labelledby="responseModalLabel{{ inquiry.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="responseModalLabel{{ inquiry.id }}">Ответ на заявку по технике "{{ inquiry.car_title }}"</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <p>{{ inquiry.staff_response|linebreaks }}</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <span class="text-muted">Пока нет ответа</span>
+                {% endif %}
+              </td>
+              <td><a href="{% url 'car_detail' inquiry.car_id %}" class="btn btn-sm btn-dark">Перейти к технике</a></td>
+              <td>
+                {% if inquiry.status == 'processing' %}
+                  <a href="{% url 'delete_inquiry' inquiry.id %}" class="btn btn-sm btn-danger" 
+                     onclick="return confirm('Вы уверены, что хотите удалить эту заявку?')">
+                    Удалить
+                  </a>
+                {% else %}
+                  <button class="btn btn-sm btn-secondary" disabled title="Нельзя удалить обработанную заявку">
+                    Удалить
+                  </button>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-primary" role="alert">
+      <h4>У Вас пока ещё нет заявок</h4>
+    </div>
+  {% endif %}
 </div>
 
 <!--   Dashboard End   -->

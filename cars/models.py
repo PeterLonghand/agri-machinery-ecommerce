@@ -54,7 +54,7 @@ class Machinery(models.Model):
         return f"{self.manufacturer} {self.model_name} ({self.year})"
 
 class Tractor(Machinery):
-    DRIVE_TYPE_CHOICES = [('wheeled_awd', 'Колёсный, полный'), ('wheeled_rwd', 'Колёсный, задний'), ('tracked', 'Гусеничный')]
+    DRIVE_TYPE_CHOICES = [('wheeled_awd', 'Колёсный, полный привод'), ('wheeled_rwd', 'Колёсный, задний привод'), ('tracked', 'Гусеничный')]
     TRANSMISSION_CHOICES = [('manual', 'Механическая'), ('auto', 'Автоматическая')]
     TOW_CLASS_CHOICES = [(i, f'Класс {i}') for i in [0.6, 0.9, 1.4, 2, 3, 4, 5, 6]]
     
@@ -81,8 +81,10 @@ class Harvester(Machinery):
 class SelfPropelledSprayer(Machinery):
     power = models.IntegerField(verbose_name="Мощность (л.с.)")
     engine_volume = models.FloatField(verbose_name= "Объём двигателя (л)")
-    width = models.FloatField(verbose_name="Ширина обработки (м)")
+    minwidth = models.IntegerField(verbose_name="Ширина обработки от, м")
+    maxwidth = models.IntegerField(verbose_name="Ширина обработки до, м")
     tank_capacity = models.IntegerField(verbose_name="Объём бака удобрений (л)")
+    pump_productivity = models.IntegerField(verbose_name="Макс. производительность насоса (л/мин)")
     class Meta:
         verbose_name = "Опрыскиватель самоходный"
         verbose_name_plural = "Опрыскиватели самоходные"
@@ -113,29 +115,40 @@ class Harrow(Machinery):
     
     width = models.FloatField(verbose_name="Ширина захвата (м)")
     harrow_type = models.CharField(choices=HARROW_TYPE_CHOICES, verbose_name="Тип бороны")
+    min_depth = models.IntegerField(verbose_name="Минимальная глубина обработки (см)")
+    max_depth = models.IntegerField(verbose_name="Максимальная глубина обработки (см)")
+    productivity = models.IntegerField(verbose_name="Макс. производительность (га/час)")
     class Meta:
         verbose_name = "Борона"
         verbose_name_plural = "Бороны"
 class TrailedSprayer(Machinery):
-    width = models.FloatField(verbose_name="Ширина обработки (м)")
+    #width = models.FloatField(verbose_name="Ширина обработки (м)")
     tank_capacity = models.IntegerField(verbose_name="Ёмкость бака для удобрений (л)")
+    minwidth = models.IntegerField(verbose_name="Ширина обработки от, м")
+    maxwidth = models.IntegerField(verbose_name="Ширина обработки до, м")
+    pump_productivity = models.IntegerField(verbose_name="Макс. производительность насоса (л/мин)")
     class Meta:
         verbose_name = "Опрыскиватель прицепной"
         verbose_name_plural = "Опрыскиватели прицепные"
 
 class Mower(Machinery):
+    MOWER_TYPE_CHOICES = [('rotary', 'Роторная'), ('disc', 'Дисковая')]    
+    mower_type = models.CharField(choices=MOWER_TYPE_CHOICES, verbose_name="Тип косилки")
     width = models.FloatField(verbose_name="Ширина захвата (м)")
+    rotation_speed = models.IntegerField(verbose_name="Скорость вращения (об/мин)")
+    productivity = models.FloatField(verbose_name="Макс. производительность (га/час))")
+    min_power = models.IntegerField(verbose_name="Мин. мощность трактора (л.с.)")
     class Meta:
         verbose_name = "Косилка прицепная"
         verbose_name_plural = "Косилки прицепные"
 
 class Baler(Machinery):
     BALER_TYPE_CHOICES = [('round', 'Рулонный'), ('rectangular', 'Тюковой')]
-    BALE_SIZE_CHOICES = [('small', 'Малый (80см)'), ('medium', 'Средний (120см)'), ('large', 'Большой (150см)')]
+    #BALE_SIZE_CHOICES = [('110', '110см'), ('120', '120см'), ('140', '140см'), ('180', '180см)')]
     width = models.FloatField(verbose_name="Ширина захвата (м)")
     baler_type = models.CharField(choices=BALER_TYPE_CHOICES, verbose_name="Тип")
-    bale_size = models.CharField(choices=BALE_SIZE_CHOICES, verbose_name="Размер тюка")
-    productivity = models.IntegerField(verbose_name="Производительность (тюков/час)")
+    bale_size = models.IntegerField( verbose_name="Размер тюка (см)")
+    productivity = models.IntegerField(verbose_name="Макс. производительность (тюков/час)")
     min_power = models.IntegerField(verbose_name="Мин. мощность трактора (л.с.)")
     class Meta:
         verbose_name = "Пресс-подборщик"

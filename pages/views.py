@@ -24,17 +24,15 @@ def home(request):
 
         
 
-    brand_search = Machinery.objects.values_list('manufacturer', flat=True).distinct()
-    city_search = Machineryy.objects.values_list('city', flat=True).distinct()
-    year_search = Machinery.objects.values_list('year', flat=True).distinct()
-    types_search = [choice[1] for choice in Machinery.MACHINERY_TYPES]
+    brand_search = Machinery.objects.values_list('manufacturer', flat=True).distinct().order_by('manufacturer')
+    year_search = Machinery.objects.values_list('year', flat=True).distinct().order_by('-year')
+    types_search = [choice[1] for choice in sorted(Machinery.MACHINERY_TYPES, key=lambda x: x[1])]
     max_price = Machinery.objects.all().order_by('-price').first().price + 1000000
     data = {
         'teams': teams,
         'featured_cars': featured_cars,
         'all_cars': all_cars,
         'brand_search': brand_search,
-        'city_search': city_search,
         'year_search': year_search,
         'types_search': types_search,
         'max_price': max_price,
@@ -68,7 +66,7 @@ def contact(request):
         send_mail(
                 email_subject,
                 message_body,
-                'rathan.kumar049@gmail.com',
+                'petervdlonghand@gmail.com',
                 [admin_email],
                 fail_silently=False,
             )

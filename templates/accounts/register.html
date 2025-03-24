@@ -1,15 +1,222 @@
 {% extends 'base.html' %}
 
-{% block title %} | Register {% endblock %}
+{% block title %}Регистрация{% endblock %}
+
+{% block extracss%}
+<style>
+    .thembo{
+        color:#82b403 !important;
+        font-weight: bold !important;
+    }
+    .thembo:hover {
+        text-decoration: underline !important;
+        color:#6d9800 !important;
+    }
+    .input-text{
+        color: #000 !important;
+    }
+    .error-message {
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+    }
+    .form-box {
+        position: relative;
+    }
+    .input-error {
+        border: 1px solid #e74c3c !important;
+    }
+    .tooltip-custom {
+        position: absolute;
+        right: -220px;
+        top: -40px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        padding: 8px 12px;
+        border-radius: 4px;
+        width: 200px;
+        display: none;
+        box-shadow: 0 2px 5px rgba(255, 0, 0, 0.1);
+        z-index: 1000;
+    }
+    .tooltip-custom::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: -10px;
+        margin-top: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent #ddd transparent transparent;
+    }
+</style>
+{% endblock %}
+{% block extrajs %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Скроллинг к форме
+    setTimeout(function() {
+      const targetElement = document.querySelector('.contact-section');
+      
+      if (targetElement) {
+        const rect = targetElement.getBoundingClientRect();
+        const targetPosition = window.pageYOffset + rect.top;
+        
+        window.scrollTo({
+          top: targetPosition - 60,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+
+    // Валидация формы
+    const form = document.querySelector('form');
+    const usernameInput = document.querySelector('input[name="username"]');
+    const firstnameInput = document.querySelector('input[name="firstname"]');
+    const lastnameInput = document.querySelector('input[name="lastname"]');
+    const emailInput = document.querySelector('input[name="email"]');
+    const passwordInput = document.querySelector('input[name="password"]');
+    const confirmPasswordInput = document.querySelector('input[name="confirm_password"]');
+
+    // Создаем подсказки для каждого поля
+    createTooltip(usernameInput, 'Логин должен содержать от 3 до 20 символов латиницы, цифр или нижнего подчеркивания');
+    createTooltip(firstnameInput, 'Имя должно содержать от 2 до 36 символов кириллицы и пробелов');
+    createTooltip(lastnameInput, 'Фамилия должна содержать от 2 до 36 символов кириллицы и пробелов');
+    createTooltip(emailInput, 'Введите корректный адрес электронной почты');
+    createTooltip(passwordInput, 'Пароль должен содержать от 8 до 36 символов');
+    createTooltip(confirmPasswordInput, 'Пароли должны совпадать');
+
+    // Функция для создания и прикрепления подсказки к полю ввода
+    function createTooltip(inputElement, message) {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip-custom';
+      tooltip.textContent = message;
+      
+      const parent = inputElement.parentNode;
+      parent.style.position = 'relative';
+      parent.appendChild(tooltip);
+      
+      // Показываем подсказку при фокусе и вводе с ошибкой
+      inputElement.addEventListener('focus', function() {
+        if (!isValidInput(inputElement)) {
+          tooltip.style.display = 'block';
+        }
+      });
+      
+      // Скрываем подсказку при потере фокуса
+      inputElement.addEventListener('blur', function() {
+        tooltip.style.display = 'none';
+      });
+      
+      // Проверяем при вводе
+      inputElement.addEventListener('input', function() {
+        if (isValidInput(inputElement)) {
+          tooltip.style.display = 'none';
+          inputElement.classList.remove('input-error');
+        } else {
+          tooltip.style.display = 'block';
+          inputElement.classList.add('input-error');
+        }
+      });
+      
+      return tooltip;
+    }
+
+    // Функция проверки валидности ввода
+    function isValidInput(inputElement) {
+      const value = inputElement.value.trim();
+      const name = inputElement.getAttribute('name');
+      
+      switch(name) {
+        case 'username':
+          return /^[a-zA-Z0-9_]{3,20}$/.test(value);
+          
+        case 'firstname':
+        case 'lastname':
+          return /^[А-Яа-яЁё\s]{2,36}$/.test(value);
+          
+        case 'email':
+          return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+          
+        case 'password':
+          return value.length >= 8 && value.length <= 36;
+          
+        case 'confirm_password':
+          const password = passwordInput.value;
+          return value === password && value.length >= 8 && value.length <= 36;
+          
+        default:
+          return true;
+      }
+    }
+
+    // Проверка формы перед отправкой
+    form.addEventListener('submit', function(event) {
+      let formValid = true;
+      
+      // Проверяем каждое поле
+      const inputs = [usernameInput, firstnameInput, lastnameInput, emailInput, passwordInput, confirmPasswordInput];
+      inputs.forEach(input => {
+        if (!isValidInput(input)) {
+          formValid = false;
+          input.classList.add('input-error');
+          const tooltip = input.parentNode.querySelector('.tooltip-custom');
+          tooltip.style.display = 'block';
+          setTimeout(() => {
+            tooltip.style.display = 'none';
+          }, 3000);
+        }
+      });
+      
+      // Если есть ошибки, отменяем отправку формы
+      if (!formValid) {
+        event.preventDefault();
+      }
+    });
+    
+    // Проверка существования пользователя с таким же логином/почтой (имитация)
+    usernameInput.addEventListener('blur', async function() {
+      if (isValidInput(usernameInput)) {
+        const tooltip = usernameInput.parentNode.querySelector('.tooltip-custom');
+        
+        // Здесь должен быть AJAX запрос на сервер для проверки
+        // Имитация для примера, в реальности нужно реализовать на сервере
+        const existingUsernames = ['admin', 'user', 'test'];
+        if (existingUsernames.includes(usernameInput.value.trim())) {
+          tooltip.textContent = 'Пользователь с таким логином уже существует';
+          tooltip.style.display = 'block';
+          usernameInput.classList.add('input-error');
+        }
+      }
+    });
+    
+    emailInput.addEventListener('blur', async function() {
+      if (isValidInput(emailInput)) {
+        const tooltip = emailInput.parentNode.querySelector('.tooltip-custom');
+        
+        // Здесь должен быть AJAX запрос на сервер для проверки
+        // Имитация для примера, в реальности нужно реализовать на сервере
+        const existingEmails = ['admin@example.com', 'test@example.com'];
+        if (existingEmails.includes(emailInput.value.trim())) {
+          tooltip.textContent = 'Пользователь с таким email уже существует';
+          tooltip.style.display = 'block';
+          emailInput.classList.add('input-error');
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}
 {% block content %}
 {% load static %}
-<!-- Log on to codeastro.com for more projects -->
+
 <div class="sub-banner overview-bgi">
     <div class="container breadcrumb-area">
         <div class="breadcrumb-areas">
             <h1>Регистрация</h1>
             <ul class="breadcrumbs">
-                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'home' %}">Главная</a></li>
                 <li class="active">Регистрация</li>
             </ul>
         </div>
@@ -26,40 +233,40 @@
                             <img src="{% static 'img/logos/cardealerLogo.png' %}" alt="logo">
                         </a>
                     </div>
-                    <h3>Create an account</h3>
+                    <h3>Регистрация</h3>
 
                     {% include 'includes/messages.html' %}
                     <form action="{% url 'register' %}" method="POST">
                       {% csrf_token %}
                         <div class="form-group form-box">
-                            <input type="text" name="firstname" class="input-text" placeholder="First Name" required>
+                            <input type="text" name="username" class="input-text" placeholder="Логин" required>
                             <i class="fa fa-user"></i>
                         </div>
                         <div class="form-group form-box">
-                            <input type="text" name="lastname" class="input-text" placeholder="Last Name" required>
+                            <input type="text" name="firstname" class="input-text" placeholder="Имя" required>
                             <i class="fa fa-user"></i>
                         </div>
                         <div class="form-group form-box">
-                            <input type="text" name="username" class="input-text" placeholder="Username" required>
+                            <input type="text" name="lastname" class="input-text" placeholder="Фамилия" required>
                             <i class="fa fa-user"></i>
                         </div>
                         <div class="form-group form-box">
-                            <input type="email" name="email" class="input-text" placeholder="Email Address" required>
+                            <input type="email" name="email" class="input-text" placeholder="Адрес e-mail" required>
                             <i class="flaticon-mail"></i>
                         </div>
                         <div class="form-group form-box">
-                            <input type="password" name="password" class="input-text" placeholder="Password" required>
+                            <input type="password" name="password" class="input-text" placeholder="Пароль" required>
                             <i class="flaticon-lock"></i>
                         </div>
                         <div class="form-group form-box">
-                            <input type="password" name="confirm_password" class="input-text" placeholder="Confirm Password" required>
+                            <input type="password" name="confirm_password" class="input-text" placeholder="Повтор пароля" required>
                             <i class="flaticon-lock"></i>
                         </div>
                         <div class="form-group mb-0 clearfix">
-                            <button type="submit" class="btn-md btn-success float-left">Register</button>
+                            <button type="submit" class="btn-md btn-success mx-auto d-block">Зарегистрироваться</button>
                         </div>
                         <div class="extra-login clearfix">
-                            <span><p>Already a member? <a href="{% url 'login' %}" class="thembo"> Login here</a></p></span>
+                            <span><p>Уже зарегистрированы? <a href="{% url 'login' %}" class="thembo">Авторизация</a></p></span>
                         </div>
                         <div class="clearfix"></div>
                      
@@ -70,5 +277,4 @@
         </div>
     </div>
 </div>
-<!-- Log on to codeastro.com for more projects -->
 {% endblock %}

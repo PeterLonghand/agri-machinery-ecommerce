@@ -33,7 +33,7 @@
                             Каталог
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a
                         {% if 'services' in request.path %}
                         class="nav-link active"
@@ -41,9 +41,9 @@
                         class="nav-link"
                         {% endif %}
                          href="{% url 'services' %}">
-                            Our Services
+                            Наши услуги
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a
                         {% if 'about' in request.path %}
@@ -52,7 +52,7 @@
                         class="nav-link"
                         {% endif %}
                          href="{% url 'about' %}">
-                            About
+                            О компании
                         </a>
                     </li>
 
@@ -64,14 +64,14 @@
                         {% else %}
                         class="nav-link"
                         {% endif %}
-                         href="{% url 'contact' %}">Contact Us</a>
-                    </li>
+                         href="{% url 'contact' %}">Контакты</a>
+                    </li><!-- 
                     <li class="nav-item dropdown m-hide">
                         <a href="#full-page-search" class="nav-link h-icon">
                             <i class="fa fa-search"></i>
                         </a>
-						<!-- Log on to codeastro.com for more projects -->
-                    </li>
+                        
+                    </li> -->
                 </ul>
             </div>
         </nav>

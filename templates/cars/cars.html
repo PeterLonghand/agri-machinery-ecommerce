@@ -1,7 +1,33 @@
 
 {% extends 'base.html' %}
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.10.0/js/lightgallery-all.min.js"></script>
+
 {% block title %}Каталог сельхозтехники{% endblock %}
+{% load static %}
+{% block extrajs %}
+<script src="{% static 'js/machinery-filter-implementation.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        const targetElement = document.querySelector('.featured-car.content-area');
+        
+        if (targetElement) {
+          const rect = targetElement.getBoundingClientRect();
+          const targetPosition = window.pageYOffset + rect.top;
+          
+          window.scrollTo({
+            top: targetPosition - 60,
+            behavior: 'smooth'
+          });
+        }
+      }, 300);
+    });
+  </script>
+{% endblock %}
 {% block content %}
+
 {% load humanize %}
 <style>
     /* Общие стили для слайдеров и инпутов */
@@ -280,14 +306,25 @@ min-height: 90px;
                                             
                                             <!-- Рабочая ширина -->
                                             <div class="sub-filter">
-                                                <label>Рабочая ширина (м)</label>
+                                                <label>Рабочая ширина ОТ, м</label>
                                                 <div class="range-slider">
                                                     <div class="range-inputs">
-                                                        <input type="number" id="self-sprayer-width-min" name="self_sprayer_width_min" class="form-control" placeholder="От">
+                                                        <input type="number" id="self-sprayer-minwidth-min" name="self_sprayer_minwidth_min" class="form-control" placeholder="От">
                                                         <span>—</span>
-                                                        <input type="number" id="self-sprayer-width-max" name="self_sprayer_width_max" class="form-control" placeholder="До">
+                                                        <input type="number" id="self-sprayer-minwidth-max" name="self_sprayer_minwidth_max" class="form-control" placeholder="До">
                                                     </div>
-                                                    <div id="self-sprayer-width-slider" class="slider-range"></div>
+                                                    <div id="self-sprayer-minwidth-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            <div class="sub-filter">
+                                                <label>Рабочая ширина ДО, м</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="self-sprayer-maxwidth-min" name="self_sprayer_maxwidth_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="self-sprayer-maxwidth-max" name="self_sprayer_maxwidth_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="self-sprayer-maxwidth-slider" class="slider-range"></div>
                                                 </div>
                                             </div>
                                             
@@ -303,6 +340,19 @@ min-height: 90px;
                                                     <div id="self-sprayer-tank-slider" class="slider-range"></div>
                                                 </div>
                                             </div>
+
+                                            <!-- Производительность насоса -->
+                                            <div class="sub-filter">
+                                                <label>Производительность насоса (л/мин)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="self-sprayer-pump-productivity-min" name="self_sprayer_pump_productivity_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="self-sprayer-pump-productivity-max" name="self_sprayer_pump_productivity_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="self-sprayer-pump-productivity-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -310,6 +360,58 @@ min-height: 90px;
                                         <div class="checkbox checkbox-theme">
                                             <input type="checkbox" id="type-trailed-sprayer" name="machinery_type" value="TrailedSprayer">
                                             <label for="type-trailed-sprayer">Прицепные опрыскиватели (<span id="count-trailedsprayer">0</span>)</label>
+                                        </div>
+                                        <div class="machinery-details" id="details-trailed-sprayer" style="display:none; padding-left: 20px;">
+                                            <div class="sub-filter">
+                                                <label>Рабочая ширина ОТ, м</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="trailed-sprayer-minwidth-min" name="trailed_sprayer_minwidth_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="trailed-sprayer-minwidth-max" name="trailed_sprayer_minwidth_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="trailed-sprayer-minwidth-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="sub-filter">
+                                                <label>Рабочая ширина ДО, м</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="trailed-sprayer-maxwidth-min" name="trailed_sprayer_maxwidth_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="trailed-sprayer-maxwidth-max" name="trailed_sprayer_maxwidth_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="trailed-sprayer-maxwidth-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+
+                                            <!-- Объем бака -->
+                                            <div class="sub-filter">
+                                                <label>Объем бака (л)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="trailed-sprayer-tank-min" name="trailed_sprayer_tank_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="trailed-sprayer-tank-max" name="trailed_sprayer_tank_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="trailed-sprayer-tank-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Производительность насоса -->
+                                            <div class="sub-filter">
+                                                <label>Производительность насоса (л/мин)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="trailed-sprayer-pump-productivity-min" name="trailed_sprayer_pump_productivity_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="trailed-sprayer-pump-productivity-max" name="trailed_sprayer_pump_productivity_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="trailed-sprayer-pump-productivity-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     
@@ -345,6 +447,17 @@ min-height: 90px;
                                                     <div id="bodies-slider" class="slider-range"></div>
                                                 </div>
                                             </div>
+                                            <div  class="sub-filter">
+                                                <label>Мин. мощность трактора (л.с.)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="plow-min-power-min" name="plow_min_power_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="plow-min-power-max" name="plow_min_power_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="plow-min-power-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>           
                                             
                                             <!-- Оборотный -->
                                             <div class="sub-filter-checkbox">
@@ -381,11 +494,11 @@ min-height: 90px;
                                                 <label>Ёмкость бункера семян</label>
                                                 <div class="range-slider">
                                                     <div class="range-inputs">
-                                                        <input type="number" id="seed-tank-capacity-min" name="seed_tank_capacity_min" class="form-control" placeholder="От">
+                                                        <input type="number" id="seeder-seed-tank-capacity-min" name="seeder_seed_tank_capacity_min" class="form-control" placeholder="От">
                                                         <span>—</span>
-                                                        <input type="number" id="seed-tank-capacity-max" name="seed_tank_capacity_max" class="form-control" placeholder="До">
+                                                        <input type="number" id="seeder-seed-tank-capacity-max" name="seeder_seed_tank_capacity_max" class="form-control" placeholder="До">
                                                     </div>
-                                                    <div id="seed-tank-capacity-slider" class="slider-range"></div>
+                                                    <div id="seeder-seed-tank-capacity-slider" class="slider-range"></div>
                                                 </div>
                                             </div>
 
@@ -394,11 +507,11 @@ min-height: 90px;
                                                 <label>Емкость бункера удобрений</label>
                                                 <div class="range-slider">
                                                     <div class="range-inputs">
-                                                        <input type="number" id="fert-tank-capacity-min" name="fert_tank_capacity_min" class="form-control" placeholder="От">
+                                                        <input type="number" id="seeder-fert-tank-capacity-min" name="seeder_fert_tank_capacity_min" class="form-control" placeholder="От">
                                                         <span>—</span>
-                                                        <input type="number" id="fert-tank-capacity-max" name="fert_tank_capacity_max" class="form-control" placeholder="До">
+                                                        <input type="number" id="seeder-fert-tank-capacity-max" name="seeder_fert_tank_capacity_max" class="form-control" placeholder="До">
                                                     </div>
-                                                    <div id="fert-tank-capacity-slider" class="slider-range"></div>
+                                                    <div id="seeder-fert-tank-capacity-slider" class="slider-range"></div>
                                                 </div>
                                             </div>
                                             
@@ -420,6 +533,67 @@ min-height: 90px;
                                             <input type="checkbox" id="type-harrow" name="machinery_type" value="Harrow">
                                             <label for="type-harrow">Бороны (<span id="count-harrow">0</span>)</label>
                                         </div>
+                                        <div class="machinery-details" id="details-harrow" style="display:none; padding-left: 20px;">
+                                            <!-- тип бороны -->
+                                            <div class="sub-filter">
+                                                <label>Тип бороны</label>
+                                                <div id="harrow-type-options">
+                                                    <!-- Будет заполнено через JavaScript -->
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                            
+                                            <!-- Рабочая ширина -->
+                                            <div class="sub-filter">
+                                                <label>Рабочая ширина (м)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="harrow-width-min" name="harrow_width_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="harrow-width-max" name="harrow_width_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="harrow-width-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                            <div class="sub-filter">
+                                                <label>Мин. глубина обработки</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="harrow-min-depth-min" name="harrow_min_depth_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="harrow-min-depth-max" name="harrow_min_depth_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="harrow-min-depth-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="sub-filter">
+                                                <label>Макс. глубина обработки</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="harrow-max-depth-min" name="harrow_max_depth_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="harrow-max-depth-max" name="harrow_max_depth_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="harrow-max-depth-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="sub-filter">
+                                                <label>Производительность (макс. га/ч)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="harrow-productivity-min" name="harrow_productivity_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="harrow-productivity-max" name="harrow_productivity_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="harrow-productivity-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     
                                     
@@ -429,6 +603,51 @@ min-height: 90px;
                                             <input type="checkbox" id="type-mower" name="machinery_type" value="Mower">
                                             <label for="type-mower">Косилки (<span id="count-mower">0</span>)</label>
                                         </div>
+                                        <div class="machinery-details" id="details-mower" style="display:none; padding-left: 20px;">
+                                            <!-- Тип косилки -->
+                                            <div class="sub-filter">
+                                                <label>Тип косилки</label>
+                                                <div id="mower-type-options">
+                                                    <!-- Будет заполнено через JavaScript -->
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                            <!-- Рабочая ширина -->
+                                            <div class="sub-filter">
+                                                <label>Рабочая ширина (м)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="mower-width-min" name="mower_width_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="mower-width-max" name="mower_width_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="mower-width-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            <div class="sub-filter">
+                                                <label>Мин. мощность трактора (л.с.)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="mower-min-power-min" name="mower_min_power_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="mower-min-power-max" name="mower_min_power_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="mower-min-power-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                            <div class="sub-filter">
+                                                <label>Производительность, до (га/ч)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="mower-productivity-min" name="mower_productivity_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="mower-productivity-max" name="mower_productivity_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="mower-productivity-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     
                                     <div class="machinery-type-item">
@@ -436,6 +655,67 @@ min-height: 90px;
                                             <input type="checkbox" id="type-baler" name="machinery_type" value="Baler">
                                             <label for="type-baler">Пресс-подборщики (<span id="count-baler">0</span>)</label>
                                         </div>
+                                        <div class="machinery-details" id="details-baler" style="display:none; padding-left: 20px;">
+                                        
+                                            <!-- Тип -->
+                                            <div class="sub-filter">
+                                                <label>Тип</label>
+                                                <div id="baler-type-options">
+                                                    <!-- Будет заполнено через JavaScript -->
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Размер тюка -->
+                                            <div class="sub-filter">
+                                                <label>Размер тюка (см)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="baler-bale-size-min" name="baler_bale_size_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="baler-bale-size-max" name="baler_bale_size_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="baler-bale-size-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="sub-filter">
+                                                <label>Ширина захвата (м)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="baler-width-min" name="baler_width_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="baler-width-max" name="baler_width_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="baler-width-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="sub-filter">
+                                                <label>Производительность (макс. т/час)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="baler-productivity-min" name="baler_productivity_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="baler-productivity-max" name="baler_productivity_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="baler-productivity-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="sub-filter">
+                                                <label>Мин. мощность трактора (л.с.)</label>
+                                                <div class="range-slider">
+                                                    <div class="range-inputs">
+                                                        <input type="number" id="baler-min-power-min" name="baler_min_power_min" class="form-control" placeholder="От">
+                                                        <span>—</span>
+                                                        <input type="number" id="baler-min-power-max" name="baler_min_power_max" class="form-control" placeholder="До">
+                                                    </div>
+                                                    <div id="baler-min-power-slider" class="slider-range"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -539,13 +819,6 @@ min-height: 90px;
         </div>
     </div>
 </template>
-
-{% endblock %}
-
-{% block extra_js %}
-<!-- Дополнительные скрипты для фильтрации и слайдеров -->
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.10.0/js/lightgallery-all.min.js"></script>
 
 {% endblock %}
 

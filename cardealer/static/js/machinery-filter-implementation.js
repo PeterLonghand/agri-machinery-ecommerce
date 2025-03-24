@@ -48,6 +48,117 @@ function applyPresetFilters() {
     // Загрузить технику с примененными фильтрами
     // Загрузку выполним чуть позже, после инициализации всех фильтров
   }
+
+  // Handle search form parameters
+  if (
+    params.machinery_type ||
+    params.manufacturer ||
+    params.year ||
+    params.min_price ||
+    params.max_price
+  ) {
+    // Apply machinery type filter if provided
+    if (params.machinery_type) {
+      const typeMapping = {
+        Трактор: "Tractor",
+        Сеялка: "Seeder",
+        Борона: "Harrow",
+        Плуг: "Plow",
+        Комбайн: "Harvester",
+        "Опрыскиватель самоходный": "SelfPropelledSprayer",
+        "Опрыскиватель прицепной": "TrailedSprayer",
+        "Косилка прицепная": "Mower",
+        "Пресс-подборщик": "Baler",
+      };
+
+      const typeValue =
+        typeMapping[params.machinery_type] || params.machinery_type;
+
+      // Отмечаем соответствующий чекбокс
+      const checkbox = document.getElementById(
+        `type-${typeValue.toLowerCase()}`
+      );
+      if (checkbox && !checkbox.checked) {
+        checkbox.checked = true;
+
+        // Показываем блок деталей для этого типа техники
+        const details = document.getElementById(
+          `details-${typeValue.toLowerCase()}`
+        );
+        if (details) {
+          details.style.display = "block";
+        }
+
+        // Добавляем в массив выбранных типов
+        if (!selectedTypes.includes(typeValue)) {
+          selectedTypes.push(typeValue);
+        }
+      }
+    }
+
+    // Apply manufacturer filter if provided
+    if (params.manufacturer) {
+      const manufacturerCheckbox = document.getElementById(
+        `manufacturer-${params.manufacturer}`
+      );
+      if (manufacturerCheckbox) {
+        manufacturerCheckbox.checked = true;
+      }
+    }
+
+    // Apply year filter if provided
+    if (params.year) {
+      const yearSlider = document.getElementById("year-slider");
+      const yearMinInput = document.getElementById("year-min");
+      const yearMaxInput = document.getElementById("year-max");
+
+      if (yearSlider && yearMinInput && yearMaxInput) {
+        const yearValue = parseInt(params.year);
+
+        // Set min and max to same year to filter for specific year
+        try {
+          $(yearSlider).slider("values", 0, yearValue);
+          $(yearSlider).slider("values", 1, yearValue);
+          yearMinInput.value = yearValue;
+          yearMaxInput.value = yearValue;
+        } catch (e) {
+          console.warn("Year slider not initialized yet");
+        }
+      }
+    }
+
+    // Apply price filter if provided
+    if (params.min_price || params.max_price) {
+      const priceSlider = document.getElementById("price-slider");
+      const priceMinInput = document.getElementById("price-min");
+      const priceMaxInput = document.getElementById("price-max");
+
+      if (priceSlider && priceMinInput && priceMaxInput) {
+        const min =
+          parseInt(params.min_price) ||
+          parseInt(priceSlider.dataset.defaultMin) ||
+          0;
+        const max =
+          parseInt(params.max_price) ||
+          parseInt(priceSlider.dataset.defaultMax) ||
+          100000000;
+
+        try {
+          $(priceSlider).slider("values", 0, min);
+          $(priceSlider).slider("values", 1, max);
+          priceMinInput.value = min;
+          priceMaxInput.value = max;
+        } catch (e) {
+          console.warn("Price slider not initialized yet");
+        }
+      }
+    }
+
+    // Trigger filter application after a slight delay to ensure all filters are initialized
+    setTimeout(() => {
+      filterButton.click();
+    }, 500);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -74,20 +185,30 @@ document.addEventListener("DOMContentLoaded", function () {
   initEventListeners();
 
   function scrollToCatalogBeginning() {
+    // Получаем текущую позицию скролла перед загрузкой новой страницы
+    const currentScrollPosition = window.pageYOffset;
+
+    // Получаем целевой элемент
     const targetElement = document.getElementById("machinery-container-area");
     const elementPosition =
       targetElement.getBoundingClientRect().top + window.pageYOffset;
     const offset = 80;
     const targetPosition = elementPosition - offset;
 
-    // Текущая позиция скролла
+    // Проверяем, нужно ли вообще скроллить
+    // Если мы уже находимся рядом с целевым элементом, оставляем скролл на месте
+    const threshold = 300; // Пороговое значение в пикселях
+    if (Math.abs(currentScrollPosition - targetPosition) < threshold) {
+      // Мы уже близко к целевому положению, скролл не нужен
+      return;
+    }
+
+    // Остальная часть вашей функции анимации
     const startPosition = window.pageYOffset;
     const distance = targetPosition - startPosition;
 
-    // Адаптируем длительность в зависимости от расстояния
-    // Меньшее расстояние - меньшая длительность для более естественного ощущения
     const distanceAbs = Math.abs(distance);
-    const baseDuration = 800; // Базовая длительность в мс
+    const baseDuration = 800;
     const duration = Math.min(
       baseDuration,
       (baseDuration * distanceAbs) / 1000
@@ -100,7 +221,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
 
-      // Улучшенная функция плавности
       const easeOutQuint = (t) => 1 + --t * t * t * t * t;
 
       window.scrollTo(0, startPosition + distance * easeOutQuint(progress));
@@ -126,6 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
         populateHarvesterDetails(data.harvester_options);
         populateSeederDetails(data.seeder_options);
         populateHarrowDetails(data.harrow_options);
+        populateMowerDetails(data.mower_options);
         populateBalerDetails(data.baler_options);
         // Проверяем и применяем пресеты перед загрузкой техники
         applyPresetFilters();
@@ -190,17 +311,153 @@ document.addEventListener("DOMContentLoaded", function () {
     // Ширина для сельхозтехники
     if (data.width_range && data.width_range.min && data.width_range.max) {
       initSlider("plow-width", data.width_range.min, data.width_range.max);
+      initSlider("mower-width", data.width_range.min, data.width_range.max);
+    }
+
+    // Минимальная ширина для опрыскивателей
+    if (
+      data.sprayer_minwidth_range &&
+      data.sprayer_minwidth_range.min &&
+      data.sprayer_minwidth_range.max
+    ) {
+      //console.log(data.sprayer_width_range);
       initSlider(
-        "self-sprayer-width",
-        data.width_range.min,
-        data.width_range.max
+        "self-sprayer-minwidth",
+        data.sprayer_minwidth_range.min,
+        data.sprayer_minwidth_range.max
+      );
+      initSlider(
+        "trailed-sprayer-minwidth",
+        data.sprayer_minwidth_range.min,
+        data.sprayer_minwidth_range.max
       );
     }
+
+    // Максимальная ширина для опрыскивателей
+    {
+      initSlider(
+        "self-sprayer-maxwidth",
+        data.sprayer_maxwidth_range.min,
+        data.sprayer_maxwidth_range.max
+      );
+      initSlider(
+        "trailed-sprayer-maxwidth",
+        data.sprayer_maxwidth_range.min,
+        data.sprayer_maxwidth_range.max
+      );
+    }
+
+    // Производительность насоса для опрыскивателей
+    if (
+      data.sprayer_pump_productivity_range &&
+      data.sprayer_pump_productivity_range.min &&
+      data.sprayer_pump_productivity_range.max
+    ) {
+      initSlider(
+        "self-sprayer-pump-productivity",
+        data.sprayer_pump_productivity_range.min,
+        data.sprayer_pump_productivity_range.max
+      );
+      initSlider(
+        "trailed-sprayer-pump-productivity",
+        data.sprayer_pump_productivity_range.min,
+        data.sprayer_pump_productivity_range.max
+      );
+    }
+
+    //
+    initSlider(
+      "mower-min-power",
+      data.mower_min_power_range.min,
+      data.mower_min_power_range.max
+    );
+    initSlider(
+      "mower-productivity",
+      data.mower_productivity_range.min,
+      data.mower_productivity_range.max
+    );
+    initSlider(
+      "plow-min-power",
+      data.plow_min_power_range.min,
+      data.plow_min_power_range.max
+    );
 
     // Специфичные слайдеры
     initSlider("bunker-volume", 0, 15);
     initSlider("bodies", 0, 12);
-    initSlider("self-sprayer-tank", 0, 6000);
+    initSlider(
+      "trailed-sprayer-tank",
+      data.sprayer_tank_range.min,
+      data.sprayer_tank_range.max
+    );
+    initSlider(
+      "self-sprayer-tank",
+      data.sprayer_tank_range.min,
+      data.sprayer_tank_range.max
+    );
+
+    initSlider(
+      "seeder-width",
+      data.seeder_width_range.min,
+      data.seeder_width_range.max
+    );
+    initSlider(
+      "seeder-seed-tank-capacity",
+      data.seeder_seed_tank_capacity_range.min,
+      data.seeder_seed_tank_capacity_range.max
+    );
+    initSlider(
+      "seeder-fert-tank-capacity",
+      data.seeder_fert_tank_capacity_range.min,
+      data.seeder_fert_tank_capacity_range.max
+    );
+
+    // бороны
+    initSlider(
+      "harrow-min-depth",
+      data.harrow_min_depth_range.min,
+      data.harrow_min_depth_range.max
+    );
+    initSlider(
+      "harrow-max-depth",
+      data.harrow_max_depth_range.min,
+      data.harrow_max_depth_range.max
+    );
+    initSlider(
+      "harrow-width",
+      data.harrow_width_range.min,
+      data.harrow_width_range.max
+    );
+    initSlider(
+      "harrow-productivity",
+      data.harrow_productivity_range.min,
+      data.harrow_productivity_range.max
+    );
+
+    //
+    // пресс-подборщики
+    //
+
+    initSlider(
+      "baler-bale-size",
+      data.bale_size_range.min,
+      data.bale_size_range.max
+    );
+    initSlider(
+      "baler-width",
+      data.baler_width_range.min,
+      data.baler_width_range.max
+    );
+    initSlider(
+      "baler-productivity",
+      data.baler_productivity_range.min,
+      data.baler_productivity_range.max
+    );
+    initSlider(
+      "baler-min-power",
+      data.baler_min_power_range.min,
+      data.baler_min_power_range.max
+    );
   }
 
   // Инициализация конкретного слайдера
@@ -211,7 +468,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const minInput = document.getElementById(`${id}-min`);
     const maxInput = document.getElementById(`${id}-max`);
 
-    // Сохраняем начальные значения как атрибуты
+    // Round min and max to integers
+    min = Math.floor(min);
+    max = Math.ceil(max);
+
+    // Save default values as attributes
     slider.dataset.defaultMin = min;
     slider.dataset.defaultMax = max;
 
@@ -220,26 +481,56 @@ document.addEventListener("DOMContentLoaded", function () {
       min: min,
       max: max,
       values: [min, max],
+      step: 1, // Force step to be 1 to ensure integer values
       slide: function (event, ui) {
-        minInput.value = ui.values[0];
-        maxInput.value = ui.values[1];
+        // Round values to integers
+        const intMinValue = Math.floor(ui.values[0]);
+        const intMaxValue = Math.ceil(ui.values[1]);
+
+        // Update input values with rounded integers
+        minInput.value = intMinValue;
+        maxInput.value = intMaxValue;
+
+        // Update slider values with rounded integers (to prevent visual feedback showing decimals)
+        $(slider).slider("values", 0, intMinValue);
+        $(slider).slider("values", 1, intMaxValue);
+
+        // Return false if the values changed to prevent additional UI updates
+        return ui.values[0] === intMinValue && ui.values[1] === intMaxValue;
       },
     });
 
-    // Синхронизация ввода с ползунком
+    // Initialize input values with integers
     minInput.value = min;
     maxInput.value = max;
 
+    // Ensure inputs only accept integers
+    minInput.addEventListener("input", function () {
+      this.value = this.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+    });
+
+    maxInput.addEventListener("input", function () {
+      this.value = this.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+    });
+
+    // Sync inputs with slider and enforce integers
     minInput.addEventListener("change", function () {
-      const value = parseInt(this.value) || min;
+      let value = parseInt(this.value) || min;
+      // Ensure value is an integer
+      value = Math.floor(value);
+      this.value = value;
       $(slider).slider("values", 0, value);
     });
 
     maxInput.addEventListener("change", function () {
-      const value = parseInt(this.value) || max;
+      let value = parseInt(this.value) || max;
+      // Ensure value is an integer
+      value = Math.ceil(value);
+      this.value = value;
       $(slider).slider("values", 1, value);
     });
   }
+
   /* function initSlider(id, min, max) {
     const slider = document.getElementById(`${id}-slider`);
     if (!slider) return;
@@ -365,6 +656,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function populateMowerDetails(options) {
+    if (document.getElementById("mower-type-options")) {
+      populateCheckboxOptions(
+        "mower-type-options",
+        options.mower_types,
+        "mower_type",
+        "Роторная",
+        "Дисковая"
+      );
+    }
+  }
+
   // Заполнение деталей для пресс-подборщиков
   function populateBalerDetails(options) {
     // Типы и размеры рулонов заполняются из options
@@ -374,18 +677,7 @@ document.addEventListener("DOMContentLoaded", function () {
         options.baler_types,
         "baler_type",
         "Рулонный",
-        "Тюковый"
-      );
-    }
-
-    if (document.getElementById("bale-size-options")) {
-      populateCheckboxOptions(
-        "bale-size-options",
-        options.bale_sizes,
-        "bale_size",
-        "Маленький",
-        "Средний",
-        "Большой"
+        "Тюковой"
       );
     }
   }
@@ -453,7 +745,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (minInput && maxInput) {
           // использ. дефолтные значения, хранящиеся в наборе данных, или  0 для min и 100 для max
           const min = parseInt(slider.dataset.defaultMin) || 0;
-          const max = parseInt(slider.dataset.defaultMax) || 100;
+          const max = parseInt(Math.ceil(slider.dataset.defaultMax)) || 100;
 
           // только если элемент был инициализирован
           try {
@@ -541,9 +833,17 @@ document.addEventListener("DOMContentLoaded", function () {
     // Обработка слайдеров для каждого типа техники
     if (selectedTypes.includes("Plow")) {
       processSlider(params, "plow-width", "plow_width");
+      processSlider(params, "bodies", "bodies");
+      processSlider(params, "plow-min-power", "plow_min_power");
     }
     if (selectedTypes.includes("SelfPropelledSprayer")) {
-      processSlider(params, "self-sprayer-width", "self_sprayer_width");
+      processSlider(params, "self-sprayer-minwidth", "self_sprayer_minwidth");
+      processSlider(params, "self-sprayer-maxwidth", "self_sprayer_maxwidth");
+      processSlider(
+        params,
+        "self-sprayer-pump-productivity",
+        "self_sprayer_pump_productivity"
+      );
       processSlider(params, "self-sprayer-tank", "self_sprayer_tank");
       processSlider(params, "self-sprayer-power", "self_sprayer_power");
     }
@@ -555,11 +855,52 @@ document.addEventListener("DOMContentLoaded", function () {
       processSlider(params, "harvester-power", "harvester_power");
       processSlider(params, "bunker-volume", "bunker_volume");
     }
+    if (selectedTypes.includes("Seeder")) {
+      processSlider(
+        params,
+        "seeder-seed-tank-capacity",
+        "seeder_seed_tank_capacity"
+      );
+      processSlider(
+        params,
+        "seeder-fert-tank-capacity",
+        "seeder_fert_tank_capacity"
+      );
+      processSlider(params, "seeder-width", "seeder_width");
+    }
+    if (selectedTypes.includes("TrailedSprayer")) {
+      processSlider(
+        params,
+        "trailed-sprayer-minwidth",
+        "trailed_sprayer_minwidth"
+      );
+      processSlider(
+        params,
+        "trailed-sprayer-maxwidth",
+        "trailed_sprayer_maxwidth"
+      );
+      processSlider(
+        params,
+        "trailed-sprayer-pump-productivity",
+        "trailed_sprayer_pump_productivity"
+      );
+      processSlider(params, "trailed-sprayer-tank", "trailed_sprayer_tank");
+    }
+    if (selectedTypes.includes("Harrow")) {
+      processSlider(params, "harrow-width", "harrow_width");
+      processSlider(params, "harrow-min-depth", "harrow_min_depth");
+      processSlider(params, "harrow-max-depth", "harrow_max_depth");
+      processSlider(params, "harrow-productivity", "harrow_productivity");
+    }
+    if (selectedTypes.includes("Mower")) {
+      processSlider(params, "mower-width", "mower_width");
+      processSlider(params, "mower-min-power", "mower_min_power");
+      processSlider(params, "mower-productivity", "mower_productivity");
+    }
 
     // Общие слайдеры
     processSlider(params, "year", "year");
     processSlider(params, "price", "price");
-    processSlider(params, "bodies", "bodies");
 
     // Добавляем собранные группы чекбоксов
     for (const [key, values] of Object.entries(checkboxGroups)) {
@@ -587,10 +928,16 @@ document.addEventListener("DOMContentLoaded", function () {
       const defaultMax =
         parseInt(slider.dataset.defaultMax) ||
         $(slider).slider("option", "max");
-      const currentMin = parseInt(minInput.value);
-      const currentMax = parseInt(maxInput.value);
 
-      // Добавляем параметры только если значения изменились от дефолтных
+      // Ensure we're using integer values
+      const currentMin = Math.floor(parseInt(minInput.value));
+      const currentMax = Math.ceil(parseInt(maxInput.value));
+
+      // Enforce integers in the inputs
+      minInput.value = currentMin;
+      maxInput.value = currentMax;
+
+      // Add parameters only if values changed from defaults
       if (currentMin !== defaultMin) {
         params[`${apiParam}_min`] = currentMin;
       }
@@ -599,103 +946,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   }
-  /* function getFilterParams() {
-    const formData = new FormData(filterForm);
-    const params = {};
-
-    // Собираем все чекбоксы с одинаковыми именами
-    const checkboxGroups = {};
-
-    // Отслеживаем, какие слайдеры были изменены
-    const slidersChanged = {};
-
-    for (const [key, value] of formData.entries()) {
-      if (value === "") continue;
-
-      // Проверяем, является ли это чекбоксом
-      const input = filterForm.querySelector(`[name="${key}"]`);
-      if (input && input.type === "checkbox") {
-        if (!checkboxGroups[key]) {
-          checkboxGroups[key] = [];
-        }
-        checkboxGroups[key].push(value);
-      } else if (key.endsWith("_min") || key.endsWith("_max")) {
-        // Извлекаем базовое имя слайдера
-        const baseName = key.replace(/_min$|_max$/, "");
-
-        // Проверяем, было ли значение слайдера изменено
-        const slider = document.getElementById(`${baseName}-slider`);
-        if (slider) {
-          const defaultMin = $(slider).slider("option", "min");
-          const defaultMax = $(slider).slider("option", "max");
-          const currentMin = parseInt(
-            document.getElementById(`${baseName}-min`).value
-          );
-          const currentMax = parseInt(
-            document.getElementById(`${baseName}-max`).value
-          );
-
-          // Если значение изменилось с дефолтного, отмечаем слайдер как измененный
-          if (currentMin !== defaultMin || currentMax !== defaultMax) {
-            slidersChanged[baseName] = true;
-          }
-        }
-
-        // Добавляем значение только если слайдер был изменен
-        if (slidersChanged[baseName]) {
-          params[key] = value;
-        }
-      } else {
-        params[key] = value;
-      }
-    }
-
-    // Добавляем собранные группы чекбоксов
-    for (const [key, values] of Object.entries(checkboxGroups)) {
-      params[key] = values.join(",");
-    }
-
-    // Добавляем выбранные типы техники
-    if (selectedTypes.length > 0) {
-      params["machinery_type"] = selectedTypes.join(",");
-    }
-
-    return params;
-  } */
-  /*   function getFilterParams() {
-    const formData = new FormData(filterForm);
-    const params = {};
-
-    // Собираем все чекбоксы с одинаковыми именами
-    const checkboxGroups = {};
-
-    for (const [key, value] of formData.entries()) {
-      if (value === "") continue;
-
-      // Проверяем, является ли это чекбоксом
-      const input = filterForm.querySelector(`[name="${key}"]`);
-      if (input && input.type === "checkbox") {
-        if (!checkboxGroups[key]) {
-          checkboxGroups[key] = [];
-        }
-        checkboxGroups[key].push(value);
-      } else {
-        params[key] = value;
-      }
-    }
-
-    // Добавляем собранные группы чекбоксов
-    for (const [key, values] of Object.entries(checkboxGroups)) {
-      params[key] = values.join(",");
-    }
-
-    // Добавляем выбранные типы техники
-    if (selectedTypes.length > 0) {
-      params["machinery_type"] = selectedTypes;
-    }
-
-    return params;
-  } */
 
   // Отображение техники
   function displayMachinery(machinery) {
@@ -719,13 +969,13 @@ document.addEventListener("DOMContentLoaded", function () {
       priceBox.textContent = `${new Intl.NumberFormat("ru-RU").format(
         item.price
       )} ₽`;
-
-      const conditionTag = clone.querySelector(".condition-tag");
-      conditionTag.textContent = item.condition_display;
-      conditionTag.className = `tag-2 condition-tag ${
-        item.condition === "new" ? "bg-success" : "bg-warning"
-      }`;
-
+      if (item.condition === "new") {
+        const conditionTag = clone.querySelector(".condition-tag");
+        conditionTag.textContent = item.condition_display;
+        conditionTag.className = `tag-2 condition-tag ${
+          item.condition === "new" ? "bg-success" : "bg-warning"
+        }`;
+      }
       const image = clone.querySelector(".w-100");
       const mainPhotoLink = clone.querySelector(".overlap-btn");
       const mainPhotoImg = clone.querySelector(".hidden");
@@ -800,38 +1050,111 @@ document.addEventListener("DOMContentLoaded", function () {
       // Общие спецификации
       //addSpec(specsList, "Состояние", item.condition_display);
 
-      // Специфичные спецификации в зависимости от типа техники
+      // спецификации в зависимости от типа техники
       if (item.machinery_type === "Tractor") {
-        addSpec(specsList, "Мощность", `${item.power} л.с.`);
         addSpec(specsList, "Привод", item.drive_type_display);
+        addSpec(
+          specsList,
+          "Двигатель",
+          `${item.power} л.с. / ${item.engine_volume} л`
+        );
         addSpec(specsList, "КПП", item.transmission_type_display);
+        addSpec(
+          specsList,
+          "Тяговый класс",
+          `
+          ${item.tow_class}`
+        );
       } else if (item.machinery_type === "Harvester") {
-        addSpec(specsList, "Мощность", `${item.power} л.с.`);
-        addSpec(specsList, "Объем бункера", `${item.bunker_volume} м³`);
         addSpec(specsList, "Тип обмолота", item.threshing_type_display);
+        addSpec(
+          specsList,
+          "Двигатель",
+          `${item.power} л.с. / ${item.engine_volume} л`
+        );
+        addSpec(specsList, "Объем бункера", `${item.bunker_volume} л`);
       } else if (item.machinery_type === "SelfPropelledSprayer") {
-        addSpec(specsList, "Мощность", `${item.power} л.с.`);
-        addSpec(specsList, "Ширина", `${item.width} м`);
+        addSpec(
+          specsList,
+          "Двигатель",
+          `${item.power} л.с. / ${item.engine_volume} л`
+        );
+
+        addSpec(
+          specsList,
+          "Ширина",
+          item.minwidth === item.maxwidth
+            ? `${item.minwidth} м`
+            : `${item.minwidth}-${item.maxwidth} м`
+        );
         addSpec(specsList, "Объем бака", `${item.tank_capacity} л`);
+        addSpec(
+          specsList,
+          "Прозводительность",
+          `до ${item.pump_productivity} л/мин`
+        );
       } else if (item.machinery_type === "Plow") {
         addSpec(specsList, "Ширина", `${item.width} м`);
         addSpec(specsList, "Корпусов", item.bodies);
         addSpec(specsList, "Оборотный", item.reversible ? "Да" : "Нет");
+        addSpec(specsList, "Вес", `${item.weight} кг`);
+        addSpec(specsList, "Мин. мощность трактора", `${item.min_power} л.с.`);
       } else if (item.machinery_type === "Seeder") {
         addSpec(specsList, "Тип", item.seed_type_display);
         addSpec(specsList, "Ширина", `${item.width} м`);
-        addSpec(specsList, "Объем бункера", `${item.seed_tank_capacity} л`);
+        addSpec(
+          specsList,
+          "Объем бункера семян",
+          `${item.seed_tank_capacity} л`
+        );
+        addSpec(
+          specsList,
+          "Объем бункера удобрений",
+          `${item.fert_tank_capacity} л`
+        );
       } else if (item.machinery_type === "Harrow") {
-        addSpec(specsList, "Ширина", `${item.width} м`);
         addSpec(specsList, "Тип", item.harrow_type_display);
-      } else if (item.machinery_type === "TrailedSprayer") {
         addSpec(specsList, "Ширина", `${item.width} м`);
+        addSpec(
+          specsList,
+          "Глубина обработки",
+          `от ${item.min_depth} до ${item.max_depth} см`
+        );
+        addSpec(
+          specsList,
+          "Производительность",
+          `до ${item.productivity} га/ч`
+        );
+      } else if (item.machinery_type === "TrailedSprayer") {
+        addSpec(
+          specsList,
+          "Ширина",
+          item.minwidth === item.maxwidth
+            ? `${item.minwidth} м`
+            : `${item.minwidth}-${item.maxwidth} м`
+        );
+        addSpec(
+          specsList,
+          "Производительность",
+          `до ${item.pump_productivity} л/мин`
+        );
+
         addSpec(specsList, "Объем бака", `${item.tank_capacity} л`);
       } else if (item.machinery_type === "Mower") {
+        addSpec(specsList, "", item.mower_type_display);
         addSpec(specsList, "Ширина", `${item.width} м`);
+        addSpec(
+          specsList,
+          "Производительность",
+          `до ${item.productivity} га/ч`
+        );
+        addSpec(specsList, "Мин. мощность трактора", `${item.min_power} л.с.`);
       } else if (item.machinery_type === "Baler") {
-        addSpec(specsList, "Тип", item.baler_type_display);
-        addSpec(specsList, "Размер тюка", item.bale_size_display);
+        addSpec(specsList, "", item.baler_type_display);
+        addSpec(specsList, "Размер тюка", `${item.bale_size} см`);
+        addSpec(specsList, "Ширина захвата", `${item.width} м`);
+        addSpec(specsList, "", `До ${item.productivity} тюк/час`);
+        addSpec(specsList, "Мин. мощность трактора", `${item.min_power} л.с.`);
       }
 
       machineryList.appendChild(clone);
@@ -852,13 +1175,18 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!value && value !== 0) return;
 
     const li = document.createElement("li");
-    li.innerHTML = `<span>${label}:</span> ${value}`;
-    list.appendChild(li);
+    if (label === "") {
+      li.innerHTML = `<span>${label}</span> ${value}`;
+      list.appendChild(li);
+    } else {
+      li.innerHTML = `<span>${label}:</span> ${value}`;
+      list.appendChild(li);
+    }
   }
 
   // Создание пагинации
   function createPagination(data) {
-    totalPages = Math.ceil(data.count / 8); // 10 - количество элементов на странице
+    totalPages = Math.ceil(data.count / 8); //  - количество элементов на странице
     paginationContainer.innerHTML = "";
 
     if (totalPages <= 1) return;

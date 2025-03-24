@@ -5570,7 +5570,7 @@ footer {
 
 /** Contact-section start **/
 .contact-section {
-  min-height: 100vh;
+  min-height: 40vh;
   position: relative;
   display: flex;
   justify-content: center;
@@ -5598,7 +5598,7 @@ footer {
   width: 100%;
   bottom: 0;
   opacity: 1;
-  min-height: 100vh;
+  height: 100vh !important;
   text-align: center;
   position: relative;
   display: flex;
@@ -5744,7 +5744,7 @@ footer {
   font-size: 15px;
   background: transparent;
   outline: 0;
-  color: #717171;
+  color: #000000;
   height: 50px;
   border-radius: 3px;
   border: 1px solid #dbdbdb;
@@ -9948,6 +9948,6 @@ a.nav-link.active {
 .condition-tag {
   background-color: #82b403 !important;
 }
-.top-addr{
+.top-addr {
   color: #ffffff !important;
 }
