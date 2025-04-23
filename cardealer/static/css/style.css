@@ -2973,7 +2973,7 @@ input[type="checkbox"]:checked + label:before {
 
 /** Car box 3 **/
 .car-box-3 {
-  height: 470px;
+  height: 500px;
   position: relative;
   margin-bottom: 30px;
   background: #fff;

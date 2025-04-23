@@ -137,44 +137,11 @@ min-height: 90px;
 
 <!-- Main Content Section -->
 <div class="featured-car content-area" id="machinery-container-area">
-    <div class="container">
+    <div class="container" style="max-width: 1410px !important;">
         <div class="row">
-            <!-- Left Column: Machinery List -->
-            <div class="col-lg-8 col-md-12">
-                <!-- Result Count & Sort Options -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <h4 id="result-count">Найдено: <span>0</span> единиц техники</h4>
-                    </div>
-                    <div class="col-md-6 text-right">
-                        <select id="sort-select" class="form-control">
-                            <option value="-created_date">Сначала новые поступления</option>
-                            <option value="price">Сначала дешевле</option>
-                            <option value="-price">Сначала дороже</option>
-                            <option value="-year">Сначала новее (по году)</option>
-                            <option value="year">Сначала старше (по году)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Machinery Cards -->
-                <div class="row" id="machinery-list">
-                    <!-- Карточки техники будут добавлены через JavaScript -->
-                </div>
-                
-                <!-- Pagination -->
-                <div class="pagination-box p-box-2 text-center">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination" id="pagination-container">
-                            <!-- Пагинация будет добавлена через JavaScript -->
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-            
-            <!-- Right Column: Filters -->
-            <div class="col-lg-4 col-md-12">
-                <div class="sidebar-right">
+            <!-- левая колонка - фильтры -->
+            <div class="col-lg-3 col-md-12">
+                <div class="sidebar-left">
                     <div class="widget advanced-search2">
                         <h3 class="sidebar-title">Фильтры техники</h3>
                         <form id="filter-form">
@@ -504,7 +471,7 @@ min-height: 90px;
 
                                             <!-- Емкость бункера удобрений-->
                                             <div class="sub-filter">
-                                                <label>Емкость бункера удобрений</label>
+                                                <label>Ёмкость бункера удобрений</label>
                                                 <div class="range-slider">
                                                     <div class="range-inputs">
                                                         <input type="number" id="seeder-fert-tank-capacity-min" name="seeder_fert_tank_capacity_min" class="form-control" placeholder="От">
@@ -767,8 +734,8 @@ min-height: 90px;
                             </div>
                             
                             <!-- Filter Buttons -->
-                            <div class="form-group mt-4 d-flex justify-content-between">
-                                <button id="filter-button" type="button" class="btn button-theme btn-md">
+                            <div class="form-group mt-4 d-flex flex-column">
+                                <button id="filter-button" type="button" class="btn button-theme btn-md mb-2">
                                     <i class="fa fa-filter"></i> Применить
                                 </button>
                                 <button id="reset-button" type="button" class="btn btn-outline-secondary btn-md">
@@ -779,13 +746,50 @@ min-height: 90px;
                     </div>
                 </div>
             </div>
+
+
+
+            <!-- Left Column: Machinery List -->
+            <div class="col-lg-9 col-md-12">
+                <!-- Result Count & Sort Options -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h4 id="result-count">Найдено: <span>0</span> единиц техники</h4>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <select id="sort-select" class="form-control">
+                            <option value="-created_date">Сначала последние поступления</option>
+                            <option value="price">Сначала дешевле</option>
+                            <option value="-price">Сначала дороже</option>
+                            <option value="-year">Сначала новее (по году)</option>
+                            <option value="year">Сначала старше (по году)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Machinery Cards -->
+                <div class="row" id="machinery-list">
+                    <!-- Карточки техники будут добавлены через JavaScript -->
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination-box p-box-2 text-center">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination" id="pagination-container">
+                            <!-- Пагинация будет добавлена через JavaScript -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            
+            
         </div>
     </div>
 </div>
 
 <!-- Template for Machinery Card -->
 <template id="machinery-card-template">
-    <div class="col-lg-6 col-md-6">
+    <div class="col-lg-4 col-md-6">
         <div class="car-box-3">
             <div class="car-thumbnail">
                 <a href="#" class="car-img machinery-link">

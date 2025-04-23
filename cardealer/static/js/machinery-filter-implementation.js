@@ -1052,7 +1052,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // спецификации в зависимости от типа техники
       if (item.machinery_type === "Tractor") {
-        addSpec(specsList, "Привод", item.drive_type_display);
+        addSpec(specsList, "", item.drive_type_display);
         addSpec(
           specsList,
           "Двигатель",
@@ -1165,7 +1165,7 @@ document.addEventListener("DOMContentLoaded", function () {
       share: false,
       fullScreen: true,
       autoplay: false,
-      autoplayControls: true,
+      autoplayControls: false,
       actualSize: false,
     });
   }
@@ -1186,7 +1186,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Создание пагинации
   function createPagination(data) {
-    totalPages = Math.ceil(data.count / 8); //  - количество элементов на странице
+    totalPages = Math.ceil(data.count / 9); //  - количество элементов на странице
     paginationContainer.innerHTML = "";
 
     if (totalPages <= 1) return;
