@@ -15,8 +15,8 @@ class Machinery(models.Model):
         ('Mower', 'Косилка прицепная'),
         ('Baler', 'Пресс-подборщик'),
     ]
-    manufacturer = models.CharField(max_length=28, verbose_name="Производитель")
-    model_name = models.CharField(max_length=28, verbose_name="Название модели")
+    manufacturer = models.CharField(max_length=30, verbose_name="Производитель")
+    model_name = models.CharField(max_length=30, verbose_name="Название модели")
 
     machinery_type = models.CharField(max_length=50, choices=MACHINERY_TYPES, editable=False)
     YEAR_CHOICES = [(r, r) for r in range(1990, datetime.now().year + 1)][::-1]
@@ -27,10 +27,10 @@ class Machinery(models.Model):
     condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, verbose_name="Состояние")
     description = RichTextField(verbose_name="Описание")
     photo = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name="Основное фото")
-    photo_1 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
-    photo_2 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
-    photo_3 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
-    photo_4 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    photo_1 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True, verbose_name="Дополнительное фото 1")
+    photo_2 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True, verbose_name="Дополнительное фото 2")
+    photo_3 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True, verbose_name="Дополнительное фото 3")
+    photo_4 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True, verbose_name="Дополнительное фото 4")
     created_date = models.DateTimeField(default=datetime.now, blank=True, verbose_name="Дата добавления")
 
     def get_real_instance(self):

@@ -287,9 +287,14 @@ def combined_machinery_list(request):
             power_max = request.query_params.get('power_max')
             engine_volume_min = request.query_params.get('engine_volume_min')
             engine_volume_max = request.query_params.get('engine_volume_max')
-            tow_class_min = request.query_params.get('tow_class_min')
-            tow_class_max = request.query_params.get('tow_class_max')
-            
+            tow_class = request.query_params.get('tow_class')
+           
+            # Фильтрация по тяговому классу
+            if tow_class:
+                tow_classes = [float(tc.strip()) for tc in tow_class.split(',')]
+                if item.tow_class not in tow_classes:
+                    include_item = False
+
             if power_min and item.power < float(power_min):
                 include_item = False
             if power_max and item.power > float(power_max):
@@ -298,10 +303,7 @@ def combined_machinery_list(request):
                 include_item = False
             if engine_volume_max and item.engine_volume > float(engine_volume_max):
                 include_item = False
-            if tow_class_min and item.tow_class < float(tow_class_min):
-                include_item = False
-            if tow_class_max and item.tow_class > float(tow_class_max):
-                include_item = False
+           
                 
                 
                 

@@ -17,10 +17,10 @@
 
 <!--   Dashboard Start   -->
 
-<div class="container mt-50 mb-50">
+<div class="container mt-50 mb-50" style="max-width: 90% !important;">
   {% include 'includes/messages.html' %}
   <div class="main-title" style="text-align:left !important;">
-        <h1>Здравствуйте, <span>{{user.first_name}} {{user.last_name}}!</span></h1>
+        <h1>Здравствуйте, <span>{{user.first_name}}!</span></h1>
         <p>Здесь отображается информация о Ваших заявках</p>
   </div>
   {% if inquiries %}
@@ -28,21 +28,21 @@
       <table class="table table-hover table-bordered table-striped">
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <!-- <th scope="col">#</th> -->
             <th scope="col">Наименование техники</th>
             <th scope="col">Дата заявки</th>
             <th scope="col">Тип заявки</th>
             <th scope="col">Сумма</th>
             <th scope="col">Комментарий</th>
             <th scope="col">Статус</th>
-            <th scope="col">Ответ</th>
+            <th scope="col">Ответ дилера</th>
             <th scope="col" colspan="2">Действия</th>
           </tr>
         </thead>
         <tbody>
           {% for inquiry in inquiries %}
-            <tr>
-              <th scope="row">{{ forloop.counter }}</th>
+            <tr><!-- 
+              <th scope="row">{{ forloop.counter }}</th> -->
               <td>{{ inquiry.car_title }}</td>
               <td>{{ inquiry.create_date|date:"d.m.Y" }}</td>
               <td>{{ inquiry.customer_need }}</td>
@@ -95,7 +95,7 @@
                     </div>
                   </div>
                 {% else %}
-                  <span class="text-muted">Пока нет ответа</span>
+                  <span class="text-muted">Нет ответа</span>
                 {% endif %}
               </td>
               <td><a href="{% url 'car_detail' inquiry.car_id %}" class="btn btn-sm btn-dark">Перейти к технике</a></td>
@@ -117,7 +117,7 @@
       </table>
     </div>
   {% else %}
-    <div class="alert alert-primary" role="alert">
+    <div class="alert alert-primary" style="background-color: #ffe5cd;" role="alert">
       <h4>У Вас пока ещё нет заявок</h4>
     </div>
   {% endif %}
